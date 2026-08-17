@@ -70,7 +70,8 @@ export const translations = {
     nextMonth: 'Sonraki Ay (+1 Ay)',
     legendMissing: 'Eksik',
     legendPartial: 'Kısmi',
-    legendComplete: 'Tamam',
+    legendComplete: 'Vaktinde Tamam',
+    legendKaza: 'Kaza ile Tamam',
     daysShort: ['Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pz'],
     monthNames: [
       'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
@@ -103,8 +104,15 @@ export const translations = {
     prayerWitr: 'Vitir',
 
     // Day Modal
-    dayModalSubtitle: 'Vakitleri işaretleyin',
-    toggleAllDayBtn: 'Hepsini İşaretle / Temizle',
+    dayModalSubtitle: 'Vakitleri ve Kaza Durumunu Yönetin',
+    statusMissing: 'Kılınmadı (Borç)',
+    statusRegular: 'Vaktinde Kılındı',
+    statusKaza: 'Kaza Edildi',
+    btnMarkKaza: '🟣 Kaza Kıldım',
+    btnMarkRegular: '✓ Vaktinde',
+    btnClearPrayer: '✕ Sıfırla',
+    btnMarkDayMissingAsKaza: '🟣 Bu Günün Eksik Kazalarını Kıldım',
+    toggleAllDayBtn: 'Hepsini Vaktinde İşaretle / Temizle',
 
     // Qibla Modal
     qiblaTitle: 'Kıble Pusulası',
@@ -176,6 +184,9 @@ export const translations = {
     toastDebtSaved: 'Kaza borcu başarıyla hesaplandı ve kaydedildi.',
     toastFullDayAdded: '✓ +1 Günlük tam kaza (6 vakit) başarıyla kılındı olarak düşüldü!',
     toastFullDayRemoved: '-1 Günlük kaza işlemi geri alındı.',
+    toastKazaDayMarked: '✓ {date} {prayer} kazası takvime işlendi!',
+    toastKazaDayReverted: '-1 {prayer} kazası ({date}) geri alındı.',
+    toastFullDayKazaMarked: '✓ {date} için 1 günlük kaza takvime işlendi!',
     toastNoKazaToDecrement: 'Geri alınacak kayıtlı ekstra kaza bulunamadı.',
     toastRangeInvalid: 'Lütfen başlangıç ve bitiş tarihlerini seçin.',
     toastRangeOrder: 'Başlangıç tarihi bitiş tarihinden sonra olamaz.',
@@ -256,7 +267,8 @@ export const translations = {
     nextMonth: 'Next Month (+1 Mo)',
     legendMissing: 'Missing',
     legendPartial: 'Partial',
-    legendComplete: 'Complete',
+    legendComplete: 'On Time Complete',
+    legendKaza: 'Completed via Qadha',
     daysShort: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
     monthNames: [
       'January', 'February', 'March', 'April', 'May', 'June',
@@ -289,8 +301,15 @@ export const translations = {
     prayerWitr: 'Witr',
 
     // Day Modal
-    dayModalSubtitle: 'Check completed prayers',
-    toggleAllDayBtn: 'Check / Uncheck All',
+    dayModalSubtitle: 'Manage Prayers & Qadha Status',
+    statusMissing: 'Not Prayed (Debt)',
+    statusRegular: 'Prayed on Time',
+    statusKaza: 'Made up (Qadha)',
+    btnMarkKaza: '🟣 Mark as Qadha',
+    btnMarkRegular: '✓ On Time',
+    btnClearPrayer: '✕ Reset',
+    btnMarkDayMissingAsKaza: '🟣 Mark Missing as Qadha',
+    toggleAllDayBtn: 'Mark All On-Time / Clear',
 
     // Qibla Modal
     qiblaTitle: 'Qibla Compass',
@@ -362,6 +381,9 @@ export const translations = {
     toastDebtSaved: 'Qadha debt calculated and saved successfully.',
     toastFullDayAdded: '✓ +1 Full day qadha (6 prayers) recorded!',
     toastFullDayRemoved: '-1 Day qadha action reverted.',
+    toastKazaDayMarked: '✓ {prayer} qadha for {date} recorded!',
+    toastKazaDayReverted: '-1 {prayer} qadha ({date}) reverted.',
+    toastFullDayKazaMarked: '✓ Full day qadha for {date} recorded!',
     toastNoKazaToDecrement: 'No extra qadha recorded to decrement.',
     toastRangeInvalid: 'Please select start and end dates.',
     toastRangeOrder: 'Start date cannot be after end date.',
@@ -442,7 +464,8 @@ export const translations = {
     nextMonth: 'Nächster Monat (+1 M)',
     legendMissing: 'Fehlend',
     legendPartial: 'Teilweise',
-    legendComplete: 'Vollständig',
+    legendComplete: 'Rechtzeitig Erledigt',
+    legendKaza: 'Mit Qada Erledigt',
     daysShort: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
     monthNames: [
       'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
@@ -475,8 +498,15 @@ export const translations = {
     prayerWitr: 'Witr',
 
     // Day Modal
-    dayModalSubtitle: 'Gebete markieren',
-    toggleAllDayBtn: 'Alle markieren / abwählen',
+    dayModalSubtitle: 'Gebete & Qada-Status verwalten',
+    statusMissing: 'Nicht verrichtet (Schuld)',
+    statusRegular: 'Rechtzeitig verrichtet',
+    statusKaza: 'Als Qada nachgeholt',
+    btnMarkKaza: '🟣 Als Qada markieren',
+    btnMarkRegular: '✓ Rechtzeitig',
+    btnClearPrayer: '✕ Zurücksetzen',
+    btnMarkDayMissingAsKaza: '🟣 Fehlende als Qada verbuchen',
+    toggleAllDayBtn: 'Alle rechtzeitig markieren / löschen',
 
     // Qibla Modal
     qiblaTitle: 'Qibla-Kompass',
@@ -548,6 +578,9 @@ export const translations = {
     toastDebtSaved: 'Qada-Schuld erfolgreich berechnet und gespeichert.',
     toastFullDayAdded: '✓ +1 Ganzer Tag Qada (6 Gebete) verbucht!',
     toastFullDayRemoved: '-1 Tag Qada zurückgenommen.',
+    toastKazaDayMarked: '✓ {prayer} Qada für {date} verbucht!',
+    toastKazaDayReverted: '-1 {prayer} Qada ({date}) zurückgenommen.',
+    toastFullDayKazaMarked: '✓ 1 Tag Qada für {date} im Kalender verbucht!',
     toastNoKazaToDecrement: 'Keine zusätzlichen Qada zum Verringern vorhanden.',
     toastRangeInvalid: 'Bitte Start- und Enddatum auswählen.',
     toastRangeOrder: 'Startdatum darf nicht nach dem Enddatum liegen.',

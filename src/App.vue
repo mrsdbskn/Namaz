@@ -751,16 +751,24 @@
               getDayStatusClasses(item.date)
             ]"
           >
-            <span>{{ item.day }}</span>
+            <span class="z-10">{{ item.day }}</span>
+            <!-- Kaza indicator badge/dot -->
+            <span 
+              v-if="item.date && hasDayKaza(item.date)" 
+              class="w-1.5 h-1.5 rounded-full bg-purple-400 absolute top-1.5 right-1.5 shadow-[0_0_6px_rgba(168,85,247,0.8)]"
+              :title="t('legendKaza')"
+            ></span>
+            <!-- Today indicator -->
             <span v-if="item.date && isToday(item.date)" :class="['w-1 h-1 rounded-full absolute bottom-1.5', themeClasses.bgDot]"></span>
           </div>
         </div>
 
         <!-- Legend -->
-        <div class="flex items-center justify-center gap-4 pt-2 text-[11px] text-neutral-400">
+        <div class="flex flex-wrap items-center justify-center gap-3 pt-2 text-[11px] text-neutral-400">
           <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500/80 shadow-[0_0_8px_rgba(244,63,94,0.5)]"></span> {{ t('legendMissing') }}</span>
           <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500/80 shadow-[0_0_8px_rgba(245,158,11,0.5)]"></span> {{ t('legendPartial') }}</span>
           <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-cyan-500/80 shadow-[0_0_8px_rgba(6,182,212,0.5)]"></span> {{ t('legendComplete') }}</span>
+          <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-purple-500/90 shadow-[0_0_8px_rgba(168,85,247,0.6)]"></span> {{ t('legendKaza') }}</span>
         </div>
       </section>
 
@@ -858,10 +866,10 @@
         </div>
       </section>
 
-      <!-- Day Logging Modal -->
+      <!-- Day Logging Modal with Direct Kaza Option -->
       <transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0 scale-95" enter-to-class="opacity-100 scale-100" leave-active-class="transition duration-150 ease-in" leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95">
-        <div v-if="selectedDate" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div class="w-full max-w-sm bg-neutral-900 border border-neutral-800 rounded-3xl p-5 space-y-4 shadow-2xl">
+        <div v-if="selectedDate" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div class="w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-3xl p-5 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center pb-2 border-b border-neutral-800">
               <div>
                 <h4 class="font-semibold text-sm text-neutral-100">{{ selectedDate }}</h4>
@@ -870,29 +878,100 @@
               <button @click="selectedDate = null" class="text-neutral-400 hover:text-white p-1">✕</button>
             </div>
 
-            <div class="grid grid-cols-2 gap-2.5">
-              <button 
+            <!-- Prayer List with Status Badges and Kaza / On-Time Actions -->
+            <div class="space-y-2">
+              <div 
                 v-for="p in prayerTypes" 
                 :key="p.id"
-                @click="toggleDayPrayer(p.id)"
-                :class="[
-                  'py-2.5 px-3 rounded-xl border text-xs font-medium flex items-center justify-between transition-all active:scale-95',
-                  isPrayerChecked(p.id) 
-                    ? `${themeClasses.bgSoft} ${themeClasses.border} ${themeClasses.text} font-semibold` 
-                    : 'bg-neutral-950 border-neutral-800 text-neutral-400'
-                ]"
+                class="p-2.5 px-3 rounded-2xl bg-neutral-950 border border-neutral-800/90 flex items-center justify-between gap-2 transition-all hover:border-neutral-700"
               >
-                <span>{{ p.name }}</span>
-                <span>{{ isPrayerChecked(p.id) ? '✓' : '○' }}</span>
-              </button>
+                <!-- Prayer Name & Status Badge -->
+                <div class="flex items-center gap-2">
+                  <div>
+                    <span class="text-xs font-semibold text-neutral-200 block">{{ p.name }}</span>
+                    <!-- Status Badge -->
+                    <span 
+                      v-if="getPrayerStatusOnDate(selectedDate, p.id) === 'kaza'" 
+                      class="inline-flex items-center gap-1 text-[10px] font-bold text-purple-400 bg-purple-500/15 px-1.5 py-0.5 rounded-md border border-purple-500/30"
+                    >
+                      🟣 {{ t('statusKaza') }}
+                    </span>
+                    <span 
+                      v-else-if="getPrayerStatusOnDate(selectedDate, p.id) === 'regular'" 
+                      class="inline-flex items-center gap-1 text-[10px] font-bold text-cyan-400 bg-cyan-500/15 px-1.5 py-0.5 rounded-md border border-cyan-500/30"
+                    >
+                      ✓ {{ t('statusRegular') }}
+                    </span>
+                    <span 
+                      v-else 
+                      class="inline-flex items-center gap-1 text-[10px] font-semibold text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded-md border border-rose-500/20"
+                    >
+                      ✕ {{ t('statusMissing') }}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Action Buttons: Kaza, On-Time, Reset -->
+                <div class="flex items-center gap-1.5">
+                  <!-- Button: Mark as Kaza -->
+                  <button 
+                    @click="setPrayerStatus(selectedDate, p.id, 'kaza')"
+                    :class="[
+                      'px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all active:scale-95 flex items-center gap-1',
+                      getPrayerStatusOnDate(selectedDate, p.id) === 'kaza'
+                        ? 'bg-purple-600 text-white font-semibold shadow-md shadow-purple-950 border border-purple-400/60'
+                        : 'bg-purple-950/40 hover:bg-purple-900/60 text-purple-300 border border-purple-800/50'
+                    ]"
+                    :title="t('btnMarkKaza')"
+                  >
+                    <span>🟣</span>
+                    <span>{{ t('statusKaza') }}</span>
+                  </button>
+
+                  <!-- Button: Mark as Regular (Vaktinde) -->
+                  <button 
+                    @click="setPrayerStatus(selectedDate, p.id, 'regular')"
+                    :class="[
+                      'px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all active:scale-95 flex items-center gap-1',
+                      getPrayerStatusOnDate(selectedDate, p.id) === 'regular'
+                        ? `${themeClasses.bgSoft} ${themeClasses.border} ${themeClasses.text} font-semibold border shadow-sm`
+                        : 'bg-neutral-900 hover:bg-neutral-800 text-neutral-400 border border-neutral-800'
+                    ]"
+                    :title="t('btnMarkRegular')"
+                  >
+                    <span>✓</span>
+                  </button>
+
+                  <!-- Button: Reset / Clear -->
+                  <button 
+                    v-if="getPrayerStatusOnDate(selectedDate, p.id) !== 'missing'"
+                    @click="setPrayerStatus(selectedDate, p.id, 'missing')"
+                    class="p-1 px-2 rounded-xl bg-neutral-900 hover:bg-rose-950/40 text-neutral-500 hover:text-rose-300 border border-neutral-800 hover:border-rose-800/40 text-xs transition-all"
+                    :title="t('btnClearPrayer')"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <button 
-              @click="toggleAllForDay"
-              class="w-full py-2 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 rounded-xl text-xs font-medium transition-colors"
-            >
-              {{ t('toggleAllDayBtn') }}
-            </button>
+            <!-- Batch Actions in Modal -->
+            <div class="space-y-2 pt-2">
+              <button 
+                @click="markAllDayMissingAsKaza(selectedDate)"
+                class="w-full py-2.5 bg-gradient-to-r from-purple-900/70 to-indigo-900/70 hover:from-purple-800 hover:to-indigo-800 border border-purple-700/50 text-purple-200 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all active:scale-98 shadow-md"
+              >
+                <span>🟣</span>
+                <span>{{ t('btnMarkDayMissingAsKaza') }}</span>
+              </button>
+
+              <button 
+                @click="toggleAllForDay"
+                class="w-full py-2 bg-neutral-800/80 hover:bg-neutral-700 text-neutral-300 rounded-xl text-xs font-medium transition-colors"
+              >
+                {{ t('toggleAllDayBtn') }}
+              </button>
+            </div>
           </div>
         </div>
       </transition>
@@ -1198,6 +1277,7 @@ const baseDebts = ref({
 })
 
 const dayLogs = ref({})
+const kazaDayLogs = ref({})
 const viewDate = ref(new Date())
 
 // Local date string helper
@@ -1208,13 +1288,40 @@ const formatDateToYMD = (date) => {
   return `${y}-${m}-${d}`
 }
 
+// Prayer helper for localized names
+const getPrayerName = (prayerId) => {
+  const p = prayerTypes.value.find(item => item.id === prayerId)
+  return p ? p.name : prayerId
+}
+
+// Status helpers for date prayers
+const getPrayerStatusOnDate = (dateStr, prayerId) => {
+  if (!dateStr) return 'missing'
+  if ((kazaDayLogs.value[dateStr] || []).includes(prayerId)) return 'kaza'
+  if ((dayLogs.value[dateStr] || []).includes(prayerId)) return 'regular'
+  return 'missing'
+}
+
+const hasDayKaza = (dateStr) => {
+  if (!dateStr) return false
+  return (kazaDayLogs.value[dateStr] || []).length > 0
+}
+
+const getDayCompletedPrayersCount = (dateStr) => {
+  if (!dateStr) return 0
+  const reg = dayLogs.value[dateStr] || []
+  const kz = kazaDayLogs.value[dateStr] || []
+  const set = new Set([...reg, ...kz])
+  return set.size
+}
+
 // Streak Calculation
 const streakInfo = computed(() => {
   const todayStr = formatDateToYMD(new Date())
   const d = new Date()
   let currentStreak = 0
 
-  const todayLogged = (dayLogs.value[todayStr] || []).length === 6
+  const todayLogged = getDayCompletedPrayersCount(todayStr) === 6
   if (todayLogged) {
     currentStreak++
   }
@@ -1222,7 +1329,7 @@ const streakInfo = computed(() => {
   d.setDate(d.getDate() - 1)
   while (true) {
     const dateStr = formatDateToYMD(d)
-    const count = (dayLogs.value[dateStr] || []).length
+    const count = getDayCompletedPrayersCount(dateStr)
     if (count === 6) {
       currentStreak++
       d.setDate(d.getDate() - 1)
@@ -1231,12 +1338,13 @@ const streakInfo = computed(() => {
     }
   }
 
-  const allDates = Object.keys(dayLogs.value).filter(k => (dayLogs.value[k] || []).length === 6).sort()
+  const allDateKeys = Array.from(new Set([...Object.keys(dayLogs.value), ...Object.keys(kazaDayLogs.value)]))
+  const allCompletedDates = allDateKeys.filter(k => getDayCompletedPrayersCount(k) === 6).sort()
   let best = 0
   let tempStreak = 0
   let prevDate = null
 
-  for (const ds of allDates) {
+  for (const ds of allCompletedDates) {
     const [y, m, day] = ds.split('-').map(Number)
     const curDate = new Date(y, m - 1, day)
     
@@ -1360,6 +1468,9 @@ const autoCompleteDaysUntilYesterday = (startDateStr, showFeedback = true) => {
   while (cur <= yesterday) {
     const dateStr = formatDateToYMD(cur)
     dayLogs.value[dateStr] = [...allPrayers]
+    if (kazaDayLogs.value[dateStr]) {
+      delete kazaDayLogs.value[dateStr]
+    }
     count++
     cur.setDate(cur.getDate() + 1)
   }
@@ -1375,11 +1486,62 @@ const handleManualAutoComplete = () => {
   autoCompleteDaysUntilYesterday(profile.value.startDate, true)
 }
 
+// Earliest missing date finder for specific prayer
+const getEarliestMissingDateForPrayer = (prayerId) => {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  
+  let start = null
+  if (profile.value.bulugDate) {
+    const parts = profile.value.bulugDate.split('-').map(Number)
+    if (parts.length === 3) {
+      start = new Date(parts[0], parts[1] - 1, parts[2])
+    }
+  }
+  if (!start && profile.value.startDate) {
+    const parts = profile.value.startDate.split('-').map(Number)
+    if (parts.length === 3) {
+      start = new Date(parts[0], parts[1] - 1, parts[2])
+    }
+  }
+  if (!start) {
+    start = new Date()
+    start.setFullYear(start.getFullYear() - 1)
+  }
+  start.setHours(0, 0, 0, 0)
+
+  const cur = new Date(start)
+  while (cur <= today) {
+    const ds = formatDateToYMD(cur)
+    const reg = dayLogs.value[ds] || []
+    const kz = kazaDayLogs.value[ds] || []
+    if (!reg.includes(prayerId) && !kz.includes(prayerId)) {
+      return ds
+    }
+    cur.setDate(cur.getDate() + 1)
+  }
+  return null
+}
+
+// Latest date where a prayer was marked as kaza
+const getLatestKazaDateForPrayer = (prayerId) => {
+  const dates = Object.keys(kazaDayLogs.value)
+    .filter(ds => (kazaDayLogs.value[ds] || []).includes(prayerId))
+    .sort()
+  if (dates.length > 0) {
+    return dates[dates.length - 1]
+  }
+  return null
+}
+
 // Prayer calculations synchronized across Calendar and Counters
 const getCalendarCompletedForPrayer = (prayerId) => {
   let count = 0
-  for (const dateStr in dayLogs.value) {
-    if (dayLogs.value[dateStr] && Array.isArray(dayLogs.value[dateStr]) && dayLogs.value[dateStr].includes(prayerId)) {
+  const allDates = new Set([...Object.keys(dayLogs.value), ...Object.keys(kazaDayLogs.value)])
+  for (const dateStr of allDates) {
+    const reg = (dayLogs.value[dateStr] || []).includes(prayerId)
+    const kz = (kazaDayLogs.value[dateStr] || []).includes(prayerId)
+    if (reg || kz) {
       count++
     }
   }
@@ -1438,38 +1600,123 @@ const overallCompletionRate = computed(() => {
   return Math.min(100, Math.round((totalCompletedCount.value / totalObligated) * 100))
 })
 
-const incrementKaza = (id) => {
-  extraKaza.value[id] = (extraKaza.value[id] || 0) + 1
-  saveToStorage()
+// Synchronized Kaza Increment & Decrement
+const incrementKaza = (prayerId) => {
+  const earliestMissingDate = getEarliestMissingDateForPrayer(prayerId)
+  if (earliestMissingDate) {
+    const current = kazaDayLogs.value[earliestMissingDate] || []
+    if (!current.includes(prayerId)) {
+      kazaDayLogs.value[earliestMissingDate] = [...current, prayerId]
+    }
+    if (dayLogs.value[earliestMissingDate]?.includes(prayerId)) {
+      dayLogs.value[earliestMissingDate] = dayLogs.value[earliestMissingDate].filter(p => p !== prayerId)
+    }
+    saveToStorage()
+    showToast(t('toastKazaDayMarked', { date: earliestMissingDate, prayer: getPrayerName(prayerId) }))
+  } else {
+    extraKaza.value[prayerId] = (extraKaza.value[prayerId] || 0) + 1
+    saveToStorage()
+    showToast(`✓ +1 ${getPrayerName(prayerId)} kaza`)
+  }
 }
 
-const decrementKaza = (id) => {
-  if ((extraKaza.value[id] || 0) > 0) {
-    extraKaza.value[id] -= 1
+const decrementKaza = (prayerId) => {
+  if ((extraKaza.value[prayerId] || 0) > 0) {
+    extraKaza.value[prayerId] -= 1
     saveToStorage()
+    showToast(`-1 ${getPrayerName(prayerId)} kaza`)
+    return
+  }
+  
+  const latestDate = getLatestKazaDateForPrayer(prayerId)
+  if (latestDate) {
+    const current = kazaDayLogs.value[latestDate] || []
+    const updated = current.filter(p => p !== prayerId)
+    if (updated.length > 0) {
+      kazaDayLogs.value[latestDate] = updated
+    } else {
+      delete kazaDayLogs.value[latestDate]
+    }
+    saveToStorage()
+    showToast(t('toastKazaDayReverted', { date: latestDate, prayer: getPrayerName(prayerId) }))
+  } else {
+    showToast(t('toastNoKazaToDecrement'))
   }
 }
 
 // Bulk 1-Day Full Kaza (6 Prayers at once)
 const incrementFullDayKaza = () => {
-  prayerTypes.value.forEach(p => {
-    extraKaza.value[p.id] = (extraKaza.value[p.id] || 0) + 1
-  })
-  saveToStorage()
-  showToast(t('toastFullDayAdded'))
+  const allPrayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha', 'witr']
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  
+  let start = null
+  if (profile.value.bulugDate) {
+    const parts = profile.value.bulugDate.split('-').map(Number)
+    if (parts.length === 3) {
+      start = new Date(parts[0], parts[1] - 1, parts[2])
+    }
+  }
+  if (!start && profile.value.startDate) {
+    const parts = profile.value.startDate.split('-').map(Number)
+    if (parts.length === 3) {
+      start = new Date(parts[0], parts[1] - 1, parts[2])
+    }
+  }
+  if (!start) {
+    start = new Date()
+    start.setFullYear(start.getFullYear() - 1)
+  }
+  start.setHours(0, 0, 0, 0)
+
+  let targetDate = null
+  const cur = new Date(start)
+  while (cur <= today) {
+    const ds = formatDateToYMD(cur)
+    const reg = dayLogs.value[ds] || []
+    const kz = kazaDayLogs.value[ds] || []
+    const missing = allPrayers.filter(p => !reg.includes(p) && !kz.includes(p))
+    if (missing.length > 0) {
+      targetDate = ds
+      break
+    }
+    cur.setDate(cur.getDate() + 1)
+  }
+
+  if (targetDate) {
+    const existingKz = kazaDayLogs.value[targetDate] || []
+    const existingReg = dayLogs.value[targetDate] || []
+    const missing = allPrayers.filter(p => !existingReg.includes(p))
+    kazaDayLogs.value[targetDate] = Array.from(new Set([...existingKz, ...missing]))
+    saveToStorage()
+    showToast(t('toastFullDayKazaMarked', { date: targetDate }))
+  } else {
+    allPrayers.forEach(pid => {
+      extraKaza.value[pid] = (extraKaza.value[pid] || 0) + 1
+    })
+    saveToStorage()
+    showToast(t('toastFullDayAdded'))
+  }
 }
 
 const decrementFullDayKaza = () => {
-  let canDecrement = false
-  prayerTypes.value.forEach(p => {
-    if ((extraKaza.value[p.id] || 0) > 0) {
-      extraKaza.value[p.id] -= 1
-      canDecrement = true
-    }
-  })
-  if (canDecrement) {
+  const allPrayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha', 'witr']
+  const canDecExtra = allPrayers.every(pid => (extraKaza.value[pid] || 0) > 0)
+  if (canDecExtra) {
+    allPrayers.forEach(pid => {
+      extraKaza.value[pid] -= 1
+    })
     saveToStorage()
     showToast(t('toastFullDayRemoved'))
+    return
+  }
+
+  const kazaDates = Object.keys(kazaDayLogs.value).filter(ds => (kazaDayLogs.value[ds] || []).length > 0).sort()
+  if (kazaDates.length > 0) {
+    const latestDate = kazaDates[kazaDates.length - 1]
+    delete kazaDayLogs.value[latestDate]
+    saveToStorage()
+    showToast(t('toastFullDayRemoved') + ` (${latestDate})`)
   } else {
     showToast(t('toastNoKazaToDecrement'))
   }
@@ -1529,8 +1776,10 @@ const applyRangeAction = (action) => {
     const ds = formatDateToYMD(cur)
     if (action === 'fill') {
       dayLogs.value[ds] = [...allPrayers]
+      if (kazaDayLogs.value[ds]) delete kazaDayLogs.value[ds]
     } else {
       delete dayLogs.value[ds]
+      delete kazaDayLogs.value[ds]
     }
     count++
     cur.setDate(cur.getDate() + 1)
@@ -1550,12 +1799,13 @@ const exportDataBackup = () => {
   const backupData = {
     profile: profile.value,
     dayLogs: dayLogs.value,
+    kazaDayLogs: kazaDayLogs.value,
     extraKaza: extraKaza.value,
     baseDebts: baseDebts.value,
     theme: currentTheme.value,
     city: selectedCity.value,
     lang: currentLang.value,
-    version: '1.1',
+    version: '1.2',
     exportDate: new Date().toISOString()
   }
 
@@ -1579,6 +1829,7 @@ const importDataBackup = (event) => {
       const data = JSON.parse(e.target.result)
       if (data.profile) profile.value = data.profile
       if (data.dayLogs) dayLogs.value = data.dayLogs
+      if (data.kazaDayLogs) kazaDayLogs.value = data.kazaDayLogs
       if (data.extraKaza) extraKaza.value = data.extraKaza
       if (data.baseDebts) baseDebts.value = data.baseDebts
       if (data.theme) currentTheme.value = data.theme
@@ -1624,6 +1875,7 @@ const executeConfirmedAction = () => {
   const type = confirmDialog.value.type
   if (type === 'calendar') {
     dayLogs.value = {}
+    kazaDayLogs.value = {}
     saveToStorage()
     showToast(t('toastCalendarReset'))
   } else if (type === 'counters') {
@@ -1641,6 +1893,7 @@ const executeConfirmedAction = () => {
     extraKaza.value = { fajr: 0, dhuhr: 0, asr: 0, maghrib: 0, isha: 0, witr: 0 }
     baseDebts.value = { fajr: 0, dhuhr: 0, asr: 0, maghrib: 0, isha: 0, witr: 0 }
     dayLogs.value = {}
+    kazaDayLogs.value = {}
     showToast(t('toastAllReset'))
   }
   confirmDialog.value.show = false
@@ -1666,7 +1919,7 @@ const chartData = computed(() => {
     d.setDate(today.getDate() - i)
     const dateStr = formatDateToYMD(d)
     
-    const count = (dayLogs.value[dateStr] || []).length
+    const count = getDayCompletedPrayersCount(dateStr)
     const barHeight = (count / maxPrayersPerDay) * 90
     const x = paddingLeft + (totalDays - 1 - i) * slotWidth + gapOffset
 
@@ -1731,14 +1984,22 @@ const isToday = (dateStr) => {
 
 const getDayStatusClasses = (dateStr) => {
   if (!dateStr) return ''
-  const logged = dayLogs.value[dateStr] || []
-  const count = logged.length
+  const reg = dayLogs.value[dateStr] || []
+  const kz = kazaDayLogs.value[dateStr] || []
+  const total = new Set([...reg, ...kz]).size
+  const isKazaPresent = kz.length > 0
 
-  if (count === 6) {
-    return 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-[inset_0_0_12px_rgba(6,182,212,0.15)]'
+  if (total === 6) {
+    if (isKazaPresent) {
+      return 'bg-purple-500/25 text-purple-200 border border-purple-500/60 shadow-[inset_0_0_14px_rgba(168,85,247,0.3)] hover:brightness-110'
+    }
+    return 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-[inset_0_0_12px_rgba(6,182,212,0.15)] hover:brightness-110'
   }
-  if (count > 0 && count < 6) {
-    return 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-[inset_0_0_12px_rgba(245,158,11,0.15)]'
+  if (total > 0 && total < 6) {
+    if (isKazaPresent) {
+      return 'bg-amber-500/15 text-amber-200 border border-purple-400/50 shadow-[inset_0_0_10px_rgba(168,85,247,0.15)] hover:brightness-110'
+    }
+    return 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-[inset_0_0_12px_rgba(245,158,11,0.15)] hover:brightness-110'
   }
   return 'bg-neutral-900/60 text-neutral-400 border border-rose-500/30 hover:border-neutral-700'
 }
@@ -1747,29 +2008,72 @@ const openDayModal = (dateStr) => {
   selectedDate.value = dateStr
 }
 
-const isPrayerChecked = (prayerId) => {
-  if (!selectedDate.value) return false
-  return (dayLogs.value[selectedDate.value] || []).includes(prayerId)
-}
+// Day Modal Actions
+const setPrayerStatus = (dateStr, prayerId, status) => {
+  if (!dateStr) return
+  const reg = dayLogs.value[dateStr] || []
+  const kz = kazaDayLogs.value[dateStr] || []
 
-const toggleDayPrayer = (prayerId) => {
-  if (!selectedDate.value) return
-  const current = dayLogs.value[selectedDate.value] || []
-  if (current.includes(prayerId)) {
-    dayLogs.value[selectedDate.value] = current.filter(id => id !== prayerId)
-  } else {
-    dayLogs.value[selectedDate.value] = [...current, prayerId]
+  if (status === 'kaza') {
+    if (!kz.includes(prayerId)) {
+      kazaDayLogs.value[dateStr] = [...kz, prayerId]
+    }
+    if (reg.includes(prayerId)) {
+      dayLogs.value[dateStr] = reg.filter(p => p !== prayerId)
+    }
+  } else if (status === 'regular') {
+    if (!reg.includes(prayerId)) {
+      dayLogs.value[dateStr] = [...reg, prayerId]
+    }
+    if (kz.includes(prayerId)) {
+      const updated = kz.filter(p => p !== prayerId)
+      if (updated.length > 0) {
+        kazaDayLogs.value[dateStr] = updated
+      } else {
+        delete kazaDayLogs.value[dateStr]
+      }
+    }
+  } else if (status === 'missing') {
+    if (reg.includes(prayerId)) {
+      const updatedReg = reg.filter(p => p !== prayerId)
+      if (updatedReg.length > 0) dayLogs.value[dateStr] = updatedReg
+      else delete dayLogs.value[dateStr]
+    }
+    if (kz.includes(prayerId)) {
+      const updatedKz = kz.filter(p => p !== prayerId)
+      if (updatedKz.length > 0) kazaDayLogs.value[dateStr] = updatedKz
+      else delete kazaDayLogs.value[dateStr]
+    }
   }
   saveToStorage()
 }
 
+const markAllDayMissingAsKaza = (dateStr) => {
+  if (!dateStr) return
+  const allPrayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha', 'witr']
+  const reg = dayLogs.value[dateStr] || []
+  const kz = kazaDayLogs.value[dateStr] || []
+  const missing = allPrayers.filter(p => !reg.includes(p) && !kz.includes(p))
+  
+  if (missing.length === 0) {
+    showToast(t('toastNoKazaToDecrement'))
+    return
+  }
+  
+  kazaDayLogs.value[dateStr] = Array.from(new Set([...kz, ...missing]))
+  saveToStorage()
+  showToast(t('toastFullDayKazaMarked', { date: dateStr }))
+}
+
 const toggleAllForDay = () => {
   if (!selectedDate.value) return
-  const current = dayLogs.value[selectedDate.value] || []
-  if (current.length === 6) {
-    dayLogs.value[selectedDate.value] = []
+  const currentCount = getDayCompletedPrayersCount(selectedDate.value)
+  if (currentCount === 6) {
+    delete dayLogs.value[selectedDate.value]
+    delete kazaDayLogs.value[selectedDate.value]
   } else {
     dayLogs.value[selectedDate.value] = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha', 'witr']
+    delete kazaDayLogs.value[selectedDate.value]
   }
   saveToStorage()
 }
@@ -1777,6 +2081,7 @@ const toggleAllForDay = () => {
 const saveToStorage = () => {
   localStorage.setItem('kaza_profile', JSON.stringify(profile.value))
   localStorage.setItem('kaza_daylogs', JSON.stringify(dayLogs.value))
+  localStorage.setItem('kaza_daykaza', JSON.stringify(kazaDayLogs.value))
   localStorage.setItem('kaza_extra', JSON.stringify(extraKaza.value))
   localStorage.setItem('kaza_theme', currentTheme.value)
   localStorage.setItem('kaza_city', selectedCity.value)
@@ -1796,6 +2101,7 @@ onMounted(() => {
   const p = localStorage.getItem('kaza_profile')
   const d = localStorage.getItem('kaza_debts')
   const l = localStorage.getItem('kaza_daylogs')
+  const kz = localStorage.getItem('kaza_daykaza')
   const e = localStorage.getItem('kaza_extra')
   const th = localStorage.getItem('kaza_theme')
   const c = localStorage.getItem('kaza_city')
@@ -1803,6 +2109,13 @@ onMounted(() => {
 
   if (p) profile.value = JSON.parse(p)
   if (l) dayLogs.value = JSON.parse(l)
+  if (kz) {
+    try {
+      kazaDayLogs.value = JSON.parse(kz)
+    } catch (err) {
+      console.error(err)
+    }
+  }
   if (th) currentTheme.value = th
   if (c) selectedCity.value = c
   if (lang && ['tr', 'en', 'de'].includes(lang)) {

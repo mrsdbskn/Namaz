@@ -154,6 +154,18 @@ export const translations = {
     qiblaFigure8DoneBtn: 'Anladım, Tamam',
     toastCalibratedNorth: 'Kuzey yönü başarıyla ayarlandı!',
     toastOffsetReset: 'Kalibrasyon sıfırlandı.',
+    // Qibla Map Tab
+    qiblaTabCompass: '🧭 Pusula',
+    qiblaTabMap: '🗺️ Harita & Kâbe Hattı',
+    qiblaMapDistanceLabel: 'Kâbe\'ye Mesafe',
+    qiblaMapUserLocTooltip: 'Sizin Konumunuz',
+    qiblaMapKaabaTooltip: 'Kâbe-i Muazzama (Mekke)',
+    qiblaMapLayerDark: '🌙 Koyu Harita',
+    qiblaMapLayerSatellite: '🛰️ Uydu Görünümü',
+    qiblaMapRecenterUser: 'Konumuma Odakla',
+    qiblaMapFitBounds: 'Tüm Hattı Göster (Dünya)',
+    qiblaMapIndoorHint: 'Pusulanın saptığı kapalı mekanlarda haritayı binalar ve sokaklarla hizalayarak kıbleyi bulun.',
+    qiblaMapKmUnit: 'km',
 
     // Location & GPS Travel Finder
     locFindMyLocBtn: '📍 Konumumu Bul (GPS)',
@@ -388,6 +400,18 @@ export const translations = {
     qiblaFigure8DoneBtn: 'Got it, Done',
     toastCalibratedNorth: 'North heading calibrated successfully!',
     toastOffsetReset: 'Calibration offset reset.',
+    // Qibla Map Tab
+    qiblaTabCompass: '🧭 Compass',
+    qiblaTabMap: '🗺️ Map & Kaaba Line',
+    qiblaMapDistanceLabel: 'Distance to Kaaba',
+    qiblaMapUserLocTooltip: 'Your Location',
+    qiblaMapKaabaTooltip: 'Holy Kaaba (Mecca)',
+    qiblaMapLayerDark: '🌙 Dark Map',
+    qiblaMapLayerSatellite: '🛰️ Satellite View',
+    qiblaMapRecenterUser: 'Recenter on Me',
+    qiblaMapFitBounds: 'Fit Whole Path (World)',
+    qiblaMapIndoorHint: 'Indoors where compass sensors drift, align with streets and building walls on the map.',
+    qiblaMapKmUnit: 'km',
 
     // Location & GPS Travel Finder
     locFindMyLocBtn: '📍 Find My Location (GPS)',
@@ -622,6 +646,18 @@ export const translations = {
     qiblaFigure8DoneBtn: 'Verstanden, Fertig',
     toastCalibratedNorth: 'Nordrichtung erfolgreich kalibriert!',
     toastOffsetReset: 'Kalibrierungs-Offset zurückgesetzt.',
+    // Qibla Map Tab
+    qiblaTabCompass: '🧭 Kompass',
+    qiblaTabMap: '🗺️ Karte & Kaaba-Linie',
+    qiblaMapDistanceLabel: 'Entfernung zur Kaaba',
+    qiblaMapUserLocTooltip: 'Ihr Standort',
+    qiblaMapKaabaTooltip: 'Heilige Kaaba (Mekka)',
+    qiblaMapLayerDark: '🌙 Dunkle Karte',
+    qiblaMapLayerSatellite: '🛰️ Satellitenansicht',
+    qiblaMapRecenterUser: 'Auf mich zentrieren',
+    qiblaMapFitBounds: 'Ganze Route anzeigen',
+    qiblaMapIndoorHint: 'In Innenräumen können Sie sich anhand von Straßen und Gebäudewänden auf der Karte orientieren.',
+    qiblaMapKmUnit: 'km',
 
     // Location & GPS Travel Finder
     locFindMyLocBtn: '📍 Meinen Standort finden (GPS)',

@@ -246,10 +246,17 @@ export function getNextPrayerInfo(times, now = new Date()) {
   }
 }
 
+// Kaaba (Mecca) Coordinates
+export const KAABA_COORDS = {
+  lat: 21.4225,
+  lng: 39.8262,
+  name: 'Kâbe-i Muazzama (Mekke)'
+}
+
 // Qibla Direction Calculator (Degrees from True North)
 export function calculateQiblaAngle(lat, lng) {
-  const kaabaLat = 21.4225
-  const kaabaLng = 39.8262
+  const kaabaLat = KAABA_COORDS.lat
+  const kaabaLng = KAABA_COORDS.lng
 
   const phi1 = d2r(lat)
   const phi2 = d2r(kaabaLat)
@@ -261,6 +268,19 @@ export function calculateQiblaAngle(lat, lng) {
   let qibla = r2d(Math.atan2(y, x))
   qibla = (qibla + 360) % 360
   return Math.round(qibla * 10) / 10
+}
+
+// Calculate distance to Kaaba in kilometers using Haversine formula
+export function calculateDistanceToKaaba(lat, lng) {
+  const dLat = d2r(KAABA_COORDS.lat - lat)
+  const dLng = d2r(KAABA_COORDS.lng - lng)
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(d2r(lat)) * Math.cos(d2r(KAABA_COORDS.lat)) *
+    Math.sin(dLng / 2) * Math.sin(dLng / 2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  const distanceKm = 6371 * c
+  return Math.round(distanceKm)
 }
 
 // Kerahat (Makruh) Times Calculation

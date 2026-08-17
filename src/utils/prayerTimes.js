@@ -82,10 +82,38 @@ export const TURKISH_CITIES = [
   { name: 'Kilis', lat: 36.7184, lng: 37.1212 },
   { name: 'Osmaniye', lat: 37.0742, lng: 36.2467 },
   { name: 'Düzce', lat: 40.8438, lng: 31.1565 },
+  // International Travel Destinations
+  { name: 'Mekke', lat: 21.4225, lng: 39.8262 },
+  { name: 'Medine', lat: 24.5247, lng: 39.5692 },
+  { name: 'Kudüs', lat: 31.7683, lng: 35.2137 },
   { name: 'Berlin', lat: 52.52, lng: 13.405 },
   { name: 'Londra', lat: 51.5074, lng: -0.1278 },
-  { name: 'Mekke', lat: 21.4225, lng: 39.8262 },
-  { name: 'Medine', lat: 24.5247, lng: 39.5692 }
+  { name: 'Paris', lat: 48.8566, lng: 2.3522 },
+  { name: 'Amsterdam', lat: 52.3676, lng: 4.9041 },
+  { name: 'Viyana', lat: 48.2082, lng: 16.3738 },
+  { name: 'Zürih', lat: 47.3769, lng: 8.5417 },
+  { name: 'Brüksel', lat: 50.8503, lng: 4.3517 },
+  { name: 'Roma', lat: 41.9028, lng: 12.4964 },
+  { name: 'Madrid', lat: 40.4168, lng: -3.7038 },
+  { name: 'Stockholm', lat: 59.3293, lng: 18.0686 },
+  { name: 'Oslo', lat: 59.9139, lng: 10.7522 },
+  { name: 'Kopenhag', lat: 55.6761, lng: 12.5683 },
+  { name: 'Dublin', lat: 53.3498, lng: -6.2603 },
+  { name: 'Dubai', lat: 25.2048, lng: 55.2708 },
+  { name: 'Doha', lat: 25.2854, lng: 51.531 },
+  { name: 'Riyad', lat: 24.7136, lng: 46.6753 },
+  { name: 'Kahire', lat: 30.0444, lng: 31.2357 },
+  { name: 'Kuveyt', lat: 29.3759, lng: 47.9774 },
+  { name: 'New York', lat: 40.7128, lng: -74.006 },
+  { name: 'Los Angeles', lat: 34.0522, lng: -118.2437 },
+  { name: 'Chicago', lat: 41.8781, lng: -87.6298 },
+  { name: 'Toronto', lat: 43.6532, lng: -79.3832 },
+  { name: 'Tokyo', lat: 35.6762, lng: 139.6503 },
+  { name: 'Seul', lat: 37.5665, lng: 126.978 },
+  { name: 'Singapur', lat: 1.3521, lng: 103.8198 },
+  { name: 'Kuala Lumpur', lat: 3.139, lng: 101.6869 },
+  { name: 'Cakarta', lat: -6.2088, lng: 106.8456 },
+  { name: 'Sidney', lat: -33.8688, lng: 151.2093 }
 ]
 
 // Trigonometric degree helpers
@@ -381,4 +409,61 @@ export function calculateSolarPosition(date, lat, lng) {
     isDay: altitude > -0.833
   }
 }
+
+// Find closest city in offline database by coordinates (Haversine Formula)
+export function findNearestCity(lat, lng, list = TURKISH_CITIES) {
+  let minDistance = Infinity
+  let nearest = list[0]
+
+  for (const city of list) {
+    const dLat = d2r(city.lat - lat)
+    const dLng = d2r(city.lng - lng)
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(d2r(lat)) * Math.cos(d2r(city.lat)) *
+      Math.sin(dLng / 2) * Math.sin(dLng / 2)
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+    const distanceKm = 6371 * c
+    if (distanceKm < minDistance) {
+      minDistance = distanceKm
+      nearest = { ...city, distanceKm: Math.round(distanceKm) }
+    }
+  }
+  return nearest
+}
+
+// Reverse geocode coordinates to human-readable city/country name with timeout
+export async function reverseGeocode(lat, lng, lang = 'tr') {
+  try {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 4500)
+    const res = await fetch(
+      `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=${lang}`,
+      { signal: controller.signal }
+    )
+    clearTimeout(timeoutId)
+    if (res.ok) {
+      const data = await res.json()
+      const city = data.city || data.locality || data.principalSubdivision || data.countryName || ''
+      const district = data.locality || data.principalSubdivision || ''
+      const country = data.countryName || ''
+      let displayName = city
+      if (country && country !== city) {
+        displayName = `${city ? city + ', ' : ''}${country}`
+      }
+      return {
+        name: displayName || `${Math.round(lat * 100) / 100}°, ${Math.round(lng * 100) / 100}°`,
+        city: city || displayName,
+        district,
+        country,
+        lat,
+        lng
+      }
+    }
+  } catch (err) {
+    // Return null to trigger offline nearest city fallback
+  }
+  return null
+}
+
 

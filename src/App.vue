@@ -138,15 +138,40 @@
             </div>
           </div>
 
-          <!-- City Selector -->
-          <div class="relative">
-            <select 
-              v-model="selectedCity" 
-              class="appearance-none bg-neutral-950 border border-neutral-800 hover:border-neutral-700 text-neutral-300 text-xs py-1 pl-2.5 pr-6 rounded-xl focus:outline-none focus:border-cyan-500 cursor-pointer transition-colors"
+          <!-- City & GPS Location Selector -->
+          <div class="flex items-center gap-1.5">
+            <!-- GPS Auto-Detect Button -->
+            <button 
+              @click="fetchUserLocation(false)"
+              :disabled="isLocating"
+              :class="[
+                'p-1.5 rounded-xl border text-xs transition-all flex items-center gap-1 shadow-sm active:scale-95',
+                isGpsActive 
+                  ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.3)]' 
+                  : 'bg-neutral-950 hover:bg-neutral-900 border-neutral-800 text-neutral-400 hover:text-neutral-200'
+              ]"
+              :title="t('locFindMyLocBtn')"
             >
-              <option v-for="c in cityList" :key="c.name" :value="c.name">{{ c.name }}</option>
-            </select>
-            <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-neutral-500 text-[8px]">▼</span>
+              <span :class="['text-xs inline-block', isLocating ? 'animate-spin' : '']">
+                {{ isLocating ? '⏳' : '📍' }}
+              </span>
+              <span v-if="isGpsActive" class="text-[10px] font-semibold text-cyan-300 hidden sm:inline">GPS</span>
+            </button>
+
+            <!-- City Dropdown -->
+            <div class="relative">
+              <select 
+                :value="isGpsActive ? 'gps_active' : selectedCity" 
+                @change="$event.target.value === 'gps_active' ? (isGpsActive = true) : selectCityManual($event.target.value)"
+                class="appearance-none bg-neutral-950 border border-neutral-800 hover:border-neutral-700 text-neutral-300 text-xs py-1 pl-2.5 pr-6 rounded-xl focus:outline-none focus:border-cyan-500 cursor-pointer transition-colors max-w-[140px] truncate"
+              >
+                <option v-if="isGpsActive" value="gps_active">
+                  📍 {{ gpsLocation.name || t('locGpsActiveBadge') }}
+                </option>
+                <option v-for="c in cityList" :key="c.name" :value="c.name">{{ c.name }}</option>
+              </select>
+              <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-neutral-500 text-[8px]">▼</span>
+            </div>
           </div>
         </div>
 
@@ -211,8 +236,13 @@
           <div class="w-full max-w-sm bg-neutral-900 border border-neutral-800 rounded-3xl p-5 space-y-4 shadow-2xl text-center my-auto max-h-[92vh] overflow-y-auto">
             <div class="flex justify-between items-center pb-2 border-b border-neutral-800">
               <div class="text-left">
-                <h4 class="font-semibold text-sm text-neutral-100">{{ t('qiblaTitle') }}</h4>
-                <p class="text-xs text-neutral-400">{{ t('qiblaSubtitle', { city: selectedCity }) }}</p>
+                <h4 class="font-semibold text-sm text-neutral-100 flex items-center gap-1.5">
+                  <span>🧭</span> {{ t('qiblaTitle') }}
+                </h4>
+                <p class="text-xs text-neutral-400 flex items-center gap-1.5">
+                  <span>{{ t('qiblaSubtitle', { city: activeCityObj.name || selectedCity }) }}</span>
+                  <span v-if="isGpsActive" class="px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 text-[9px] font-mono border border-cyan-500/30">GPS</span>
+                </p>
               </div>
               <button @click="closeQiblaModal" class="text-neutral-400 hover:text-white p-1">✕</button>
             </div>
@@ -564,6 +594,53 @@
             </div>
           </div>
           
+          <!-- Location & Travel Mode Section -->
+          <div class="p-3 rounded-2xl bg-neutral-950 border border-neutral-800 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <div>
+                <h4 class="text-xs font-semibold text-neutral-200 flex items-center gap-1.5">
+                  <span>📍</span> {{ t('locUseGpsTitle') }}
+                </h4>
+                <p class="text-[11px] text-neutral-400">{{ t('locUseGpsDesc') }}</p>
+              </div>
+              <span v-if="isGpsActive" class="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-semibold border border-cyan-500/30 animate-pulse">
+                {{ t('locGpsActiveBadge') }}
+              </span>
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] bg-neutral-900/80 px-2.5 py-2 rounded-xl border border-neutral-800/80">
+              <span class="text-neutral-400">{{ t('locGpsCoordsLabel') }}:</span>
+              <span class="font-mono text-neutral-200 font-medium">
+                {{ Number(activeCityObj.lat).toFixed(4) }}°, {{ Number(activeCityObj.lng).toFixed(4) }}°
+              </span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 pt-0.5">
+              <button 
+                @click="fetchUserLocation(false)"
+                :disabled="isLocating"
+                :class="['py-2 px-2.5 text-white font-medium rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95 disabled:opacity-50', themeClasses.gradientBtn]"
+              >
+                <span>{{ isLocating ? '⏳' : '🔄' }}</span>
+                <span>{{ isLocating ? t('locDetecting') : t('locUpdateGpsBtn') }}</span>
+              </button>
+              <button 
+                v-if="isGpsActive"
+                @click="selectCityManual(selectedCity)"
+                class="py-2 px-2.5 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 rounded-xl text-xs text-neutral-300 transition-colors"
+              >
+                {{ t('locSwitchToCityList') }}
+              </button>
+              <button 
+                v-else
+                @click="fetchUserLocation(false)"
+                class="py-2 px-2.5 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 rounded-xl text-xs text-neutral-300 transition-colors"
+              >
+                {{ t('locFindMyLocBtn') }}
+              </button>
+            </div>
+          </div>
+
           <!-- Parameters -->
           <div class="space-y-3.5 text-xs pt-1 border-t border-neutral-800/70">
             <h3 class="font-semibold text-neutral-300 text-xs">{{ t('paramsTitle') }}</h3>
@@ -1182,7 +1259,9 @@ import {
   getNextPrayerInfo, 
   calculateQiblaAngle, 
   calculateSolarPosition,
-  getKerahatInfo, 
+  getKerahatInfo,
+  findNearestCity,
+  reverseGeocode,
   TURKISH_CITIES 
 } from './utils/prayerTimes.js'
 import { 
@@ -1292,12 +1371,94 @@ const themeHexColor = computed(() => {
 // City, Prayer Times & Kerahat Info
 const cityList = TURKISH_CITIES
 const selectedCity = ref('İstanbul')
+const isGpsActive = ref(false)
+const isLocating = ref(false)
+const gpsLocation = ref({
+  name: '',
+  city: '',
+  district: '',
+  country: '',
+  lat: 41.0082,
+  lng: 28.9784
+})
 const nowTimer = ref(new Date())
 let clockInterval = null
 
 const activeCityObj = computed(() => {
+  if (isGpsActive.value && gpsLocation.value && gpsLocation.value.lat) {
+    return gpsLocation.value
+  }
   return cityList.find(c => c.name === selectedCity.value) || cityList[0]
 })
+
+const fetchUserLocation = (silent = false) => {
+  if (!navigator.geolocation) {
+    if (!silent) showToast(t('toastLocUnavailable'))
+    return
+  }
+
+  isLocating.value = true
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      const lat = pos.coords.latitude
+      const lng = pos.coords.longitude
+
+      // Try reverse geocode with fallback to nearest offline city
+      let geoInfo = await reverseGeocode(lat, lng, currentLang.value)
+      if (!geoInfo || !geoInfo.name) {
+        const nearest = findNearestCity(lat, lng, cityList)
+        geoInfo = {
+          name: `${nearest.name} (${nearest.distanceKm} km)`,
+          city: nearest.name,
+          district: '',
+          country: '',
+          lat,
+          lng
+        }
+      }
+
+      gpsLocation.value = {
+        name: geoInfo.name,
+        city: geoInfo.city,
+        district: geoInfo.district || '',
+        country: geoInfo.country || '',
+        lat,
+        lng
+      }
+      isGpsActive.value = true
+      isLocating.value = false
+
+      localStorage.setItem('namaz_gps_location', JSON.stringify(gpsLocation.value))
+      localStorage.setItem('namaz_use_gps', 'true')
+
+      showToast(t('toastLocSuccess', { name: geoInfo.name }))
+    },
+    (err) => {
+      isLocating.value = false
+      if (!silent) {
+        if (err.code === 1) {
+          showToast(t('toastLocPermissionDenied'))
+        } else if (err.code === 3) {
+          showToast(t('toastLocTimeout'))
+        } else {
+          showToast(t('toastLocUnavailable'))
+        }
+      }
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 60000
+    }
+  )
+}
+
+const selectCityManual = (cityName) => {
+  selectedCity.value = cityName
+  isGpsActive.value = false
+  localStorage.setItem('namaz_use_gps', 'false')
+  localStorage.setItem('kaza_city', cityName)
+}
 
 const currentPrayerTimes = computed(() => {
   const city = activeCityObj.value
@@ -2349,6 +2510,8 @@ onMounted(() => {
   const th = localStorage.getItem('kaza_theme')
   const c = localStorage.getItem('kaza_city')
   const lang = localStorage.getItem('kaza_lang')
+  const savedUseGps = localStorage.getItem('namaz_use_gps') === 'true'
+  const savedGpsLoc = localStorage.getItem('namaz_gps_location')
 
   if (p) profile.value = JSON.parse(p)
   if (l) dayLogs.value = JSON.parse(l)
@@ -2361,6 +2524,16 @@ onMounted(() => {
   }
   if (th) currentTheme.value = th
   if (c) selectedCity.value = c
+  if (savedGpsLoc) {
+    try {
+      gpsLocation.value = JSON.parse(savedGpsLoc)
+      if (savedUseGps) {
+        isGpsActive.value = true
+      }
+    } catch (err) {
+      console.error(err)
+    }
+  }
   if (lang && ['tr', 'en', 'de'].includes(lang)) {
     currentLang.value = lang
   } else {

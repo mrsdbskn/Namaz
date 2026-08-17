@@ -155,6 +155,22 @@ export const translations = {
     toastCalibratedNorth: 'Kuzey yönü başarıyla ayarlandı!',
     toastOffsetReset: 'Kalibrasyon sıfırlandı.',
 
+    // Location & GPS Travel Finder
+    locFindMyLocBtn: '📍 Konumumu Bul (GPS)',
+    locDetecting: 'Konum alınıyor...',
+    locGpsActiveBadge: 'GPS Konumu',
+    locGpsCoordsLabel: 'Koordinatlar',
+    locUseGpsTitle: 'Seyahat / GPS Konumu',
+    locUseGpsDesc: 'Bulunduğunuz yere göre namaz ve kıbleyi anlık hesaplayın',
+    locNearestCityLabel: 'En Yakın Şehir',
+    locSwitchToCityList: 'Şehir Listesinden Seç',
+    locSwitchToGps: 'GPS Konumuna Geç',
+    locUpdateGpsBtn: '🔄 Konumu Güncelle',
+    toastLocPermissionDenied: 'Konum izni reddedildi. Lütfen tarayıcı ayarlarından izin verin.',
+    toastLocUnavailable: 'Konum bilgisi alınamadı.',
+    toastLocSuccess: 'Konum güncellendi: {name}',
+    toastLocTimeout: 'Konum alma zaman aşımına uğradı.',
+
     // Range Batch Modal
     rangeModalTitle: 'Toplu Tarih Aralığı İşlemleri',
     rangeModalSubtitle: 'İki tarih arasındaki tüm günleri toplu düzenleyin',
@@ -373,6 +389,22 @@ export const translations = {
     toastCalibratedNorth: 'North heading calibrated successfully!',
     toastOffsetReset: 'Calibration offset reset.',
 
+    // Location & GPS Travel Finder
+    locFindMyLocBtn: '📍 Find My Location (GPS)',
+    locDetecting: 'Detecting location...',
+    locGpsActiveBadge: 'GPS Location',
+    locGpsCoordsLabel: 'Coordinates',
+    locUseGpsTitle: 'Travel / GPS Location',
+    locUseGpsDesc: 'Calculate accurate prayer times and Qibla on the go',
+    locNearestCityLabel: 'Nearest City',
+    locSwitchToCityList: 'Select from City List',
+    locSwitchToGps: 'Switch to GPS Location',
+    locUpdateGpsBtn: '🔄 Update Location',
+    toastLocPermissionDenied: 'Location permission denied. Please allow access in browser settings.',
+    toastLocUnavailable: 'Location information unavailable.',
+    toastLocSuccess: 'Location updated: {name}',
+    toastLocTimeout: 'Location request timed out.',
+
     // Range Batch Modal
     rangeModalTitle: 'Date Range Batch Actions',
     rangeModalSubtitle: 'Batch update days between two dates',
@@ -590,6 +622,22 @@ export const translations = {
     qiblaFigure8DoneBtn: 'Verstanden, Fertig',
     toastCalibratedNorth: 'Nordrichtung erfolgreich kalibriert!',
     toastOffsetReset: 'Kalibrierungs-Offset zurückgesetzt.',
+
+    // Location & GPS Travel Finder
+    locFindMyLocBtn: '📍 Meinen Standort finden (GPS)',
+    locDetecting: 'Standort wird ermittelt...',
+    locGpsActiveBadge: 'GPS-Standort',
+    locGpsCoordsLabel: 'Koordinaten',
+    locUseGpsTitle: 'Reise- / GPS-Standort',
+    locUseGpsDesc: 'Gebetszeiten und Qibla unterwegs genau berechnen',
+    locNearestCityLabel: 'Nächste Stadt',
+    locSwitchToCityList: 'Aus Städteliste wählen',
+    locSwitchToGps: 'Zu GPS-Standort wechseln',
+    locUpdateGpsBtn: '🔄 Standort aktualisieren',
+    toastLocPermissionDenied: 'Standortberechtigung verweigert. Bitte Browsereinstellungen prüfen.',
+    toastLocUnavailable: 'Standortinformationen nicht verfügbar.',
+    toastLocSuccess: 'Standort aktualisiert: {name}',
+    toastLocTimeout: 'Standortabfrage hat Zeitüberschreitung erreicht.',
 
     // Range Batch Modal
     rangeModalTitle: 'Datumsbereich Stapelverarbeitung',

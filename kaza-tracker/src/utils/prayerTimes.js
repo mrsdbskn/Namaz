@@ -1,0 +1,335 @@
+// Offline Astronomical Prayer Times Calculator with 81 Turkish Provinces & Qibla / Kerahat Utilities
+
+export const TURKISH_CITIES = [
+  { name: 'Adana', lat: 37.0, lng: 35.3213 },
+  { name: 'Adıyaman', lat: 37.7648, lng: 38.2786 },
+  { name: 'Afyonkarahisar', lat: 38.7507, lng: 30.5567 },
+  { name: 'Ağrı', lat: 39.7191, lng: 43.0503 },
+  { name: 'Amasya', lat: 40.6534, lng: 35.8331 },
+  { name: 'Ankara', lat: 39.9334, lng: 32.8597 },
+  { name: 'Antalya', lat: 36.8969, lng: 30.7133 },
+  { name: 'Artvin', lat: 41.1828, lng: 41.8183 },
+  { name: 'Aydın', lat: 37.856, lng: 27.8416 },
+  { name: 'Balıkesir', lat: 39.6484, lng: 27.8826 },
+  { name: 'Bilecik', lat: 40.1451, lng: 29.9799 },
+  { name: 'Bingöl', lat: 38.8854, lng: 40.4983 },
+  { name: 'Bitlis', lat: 38.4006, lng: 42.1095 },
+  { name: 'Bolu', lat: 40.7392, lng: 31.6089 },
+  { name: 'Burdur', lat: 37.7203, lng: 30.2908 },
+  { name: 'Bursa', lat: 40.1885, lng: 29.061 },
+  { name: 'Çanakkale', lat: 40.1553, lng: 26.4142 },
+  { name: 'Çankırı', lat: 40.6013, lng: 33.6134 },
+  { name: 'Çorum', lat: 40.5506, lng: 34.9556 },
+  { name: 'Denizli', lat: 37.7765, lng: 29.0864 },
+  { name: 'Diyarbakır', lat: 37.9144, lng: 40.2306 },
+  { name: 'Edirne', lat: 41.6772, lng: 26.5557 },
+  { name: 'Elazığ', lat: 38.681, lng: 39.2264 },
+  { name: 'Erzincan', lat: 39.75, lng: 39.5 },
+  { name: 'Erzurum', lat: 39.9055, lng: 41.2658 },
+  { name: 'Eskişehir', lat: 39.7767, lng: 30.5206 },
+  { name: 'Gaziantep', lat: 37.0662, lng: 37.3833 },
+  { name: 'Giresun', lat: 40.9128, lng: 38.3895 },
+  { name: 'Gümüşhane', lat: 40.4608, lng: 39.4817 },
+  { name: 'Hakkari', lat: 37.5833, lng: 43.7333 },
+  { name: 'Hatay', lat: 36.4018, lng: 36.3498 },
+  { name: 'Isparta', lat: 37.7648, lng: 30.5566 },
+  { name: 'Mersin', lat: 36.8121, lng: 34.6415 },
+  { name: 'İstanbul', lat: 41.0082, lng: 28.9784 },
+  { name: 'İzmir', lat: 38.4237, lng: 27.1428 },
+  { name: 'Kars', lat: 40.6013, lng: 43.0975 },
+  { name: 'Kastamonu', lat: 41.3887, lng: 33.7827 },
+  { name: 'Kayseri', lat: 38.7312, lng: 35.4787 },
+  { name: 'Kırklareli', lat: 41.7333, lng: 27.2167 },
+  { name: 'Kırşehir', lat: 39.1425, lng: 34.1709 },
+  { name: 'Kocaeli', lat: 40.8533, lng: 29.8815 },
+  { name: 'Konya', lat: 37.8746, lng: 32.4932 },
+  { name: 'Kütahya', lat: 39.4167, lng: 29.9833 },
+  { name: 'Malatya', lat: 38.3552, lng: 38.3095 },
+  { name: 'Manisa', lat: 38.6191, lng: 27.4289 },
+  { name: 'Kahramanmaraş', lat: 37.5858, lng: 36.9371 },
+  { name: 'Mardin', lat: 37.3212, lng: 40.7245 },
+  { name: 'Muğla', lat: 37.2153, lng: 28.3636 },
+  { name: 'Muş', lat: 38.7432, lng: 41.5064 },
+  { name: 'Nevşehir', lat: 38.6244, lng: 34.7144 },
+  { name: 'Niğde', lat: 37.9667, lng: 34.6833 },
+  { name: 'Ordu', lat: 40.9839, lng: 37.8764 },
+  { name: 'Rize', lat: 41.0201, lng: 40.5234 },
+  { name: 'Sakarya', lat: 40.7569, lng: 30.3783 },
+  { name: 'Samsun', lat: 41.2928, lng: 36.3313 },
+  { name: 'Siirt', lat: 37.9333, lng: 41.95 },
+  { name: 'Sinop', lat: 42.0231, lng: 35.1531 },
+  { name: 'Sivas', lat: 39.7477, lng: 37.0179 },
+  { name: 'Tekirdağ', lat: 40.9833, lng: 27.5167 },
+  { name: 'Tokat', lat: 40.3167, lng: 36.55 },
+  { name: 'Trabzon', lat: 41.0027, lng: 39.7168 },
+  { name: 'Tunceli', lat: 39.1079, lng: 39.5401 },
+  { name: 'Şanlıurfa', lat: 37.1674, lng: 38.7955 },
+  { name: 'Uşak', lat: 38.6823, lng: 29.4082 },
+  { name: 'Van', lat: 38.4891, lng: 43.4089 },
+  { name: 'Yozgat', lat: 39.8181, lng: 34.8147 },
+  { name: 'Zonguldak', lat: 41.4564, lng: 31.7987 },
+  { name: 'Aksaray', lat: 38.3687, lng: 34.037 },
+  { name: 'Bayburt', lat: 40.2552, lng: 40.2249 },
+  { name: 'Karaman', lat: 37.1759, lng: 33.2287 },
+  { name: 'Kırıkkale', lat: 39.8468, lng: 33.5153 },
+  { name: 'Batman', lat: 37.8812, lng: 41.1293 },
+  { name: 'Şırnak', lat: 37.5164, lng: 42.4918 },
+  { name: 'Bartın', lat: 41.6344, lng: 32.3375 },
+  { name: 'Ardahan', lat: 41.1105, lng: 42.7022 },
+  { name: 'Iğdır', lat: 39.9196, lng: 44.045 },
+  { name: 'Yalova', lat: 40.655, lng: 29.2769 },
+  { name: 'Karabük', lat: 41.2061, lng: 32.6204 },
+  { name: 'Kilis', lat: 36.7184, lng: 37.1212 },
+  { name: 'Osmaniye', lat: 37.0742, lng: 36.2467 },
+  { name: 'Düzce', lat: 40.8438, lng: 31.1565 },
+  { name: 'Berlin', lat: 52.52, lng: 13.405 },
+  { name: 'Londra', lat: 51.5074, lng: -0.1278 },
+  { name: 'Mekke', lat: 21.4225, lng: 39.8262 },
+  { name: 'Medine', lat: 24.5247, lng: 39.5692 }
+]
+
+// Trigonometric degree helpers
+const d2r = (d) => (d * Math.PI) / 180.0
+const r2d = (r) => (r * 180.0) / Math.PI
+const sinD = (d) => Math.sin(d2r(d))
+const cosD = (d) => Math.cos(d2r(d))
+const tanD = (d) => Math.tan(d2r(d))
+const arccosD = (x) => r2d(Math.acos(Math.max(-1, Math.min(1, x))))
+const arcsinD = (x) => r2d(Math.asin(Math.max(-1, Math.min(1, x))))
+const arccotD = (x) => r2d(Math.atan(1.0 / x))
+
+// Calculate astronomical prayer times
+export function calculatePrayerTimes(date, lat, lng) {
+  const year = date.getFullYear()
+  const month = date.getMonth() + 1
+  const day = date.getDate()
+
+  // Julian Date calculation
+  let Y = year
+  let M = month
+  if (M <= 2) {
+    Y -= 1
+    M += 12
+  }
+  const A = Math.floor(Y / 100)
+  const B = 2 - A + Math.floor(A / 4)
+  const JD = Math.floor(365.25 * (Y + 4716)) + Math.floor(30.6001 * (M + 1)) + day + B - 1524.5
+
+  const D = JD - 2451545.0
+  const g = 357.529 + 0.98560028 * D
+  const q = 280.459 + 0.98564736 * D
+  const L = q + 1.915 * sinD(g) + 0.02 * sinD(2 * g)
+  const e = 23.439 - 0.00000036 * D
+  const RA = r2d(Math.atan2(cosD(e) * sinD(L), cosD(L))) / 15.0
+  const decl = arcsinD(sinD(e) * sinD(L))
+  const EqT = q / 15.0 - (RA < 0 ? RA + 24 : RA)
+
+  // Local timezone offset in hours
+  const tzOffset = -date.getTimezoneOffset() / 60
+
+  // Midday (Noon / Dhuhr)
+  const noon = 12 + tzOffset - lng / 15.0 - EqT
+
+  // Sun hour angle helper for a given altitude alpha
+  const hourAngle = (alpha) => {
+    const cosHA = (sinD(alpha) - sinD(lat) * sinD(decl)) / (cosD(lat) * cosD(decl))
+    return arccosD(cosHA) / 15.0
+  }
+
+  // Diyanet standard angles: Fajr 18 deg, Sunrise -0.833 deg, Isha 17 deg
+  const fajrHA = hourAngle(-18.0)
+  const sunriseHA = hourAngle(-0.833)
+  const sunsetHA = hourAngle(-0.833)
+  const ishaHA = hourAngle(-17.0)
+
+  // Asr hour angle (standard shadow factor = 1)
+  const asrAlt = arccotD(1.0 + tanD(Math.abs(lat - decl)))
+  const asrHA = hourAngle(asrAlt)
+
+  const imsakTime = noon - fajrHA
+  const gunesTime = noon - sunriseHA
+  const ogleTime = noon
+  const ikindiTime = noon + asrHA
+  const aksamTime = noon + sunsetHA
+  const yatsiTime = noon + ishaHA
+
+  const formatHours = (h) => {
+    let normalized = h % 24
+    if (normalized < 0) normalized += 24
+    const hours = Math.floor(normalized)
+    const minutes = Math.floor((normalized - hours) * 60)
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+  }
+
+  return {
+    fajr: formatHours(imsakTime),
+    sunrise: formatHours(gunesTime),
+    dhuhr: formatHours(ogleTime),
+    asr: formatHours(ikindiTime),
+    maghrib: formatHours(aksamTime),
+    isha: formatHours(yatsiTime)
+  }
+}
+
+// Get next prayer and remaining time
+export function getNextPrayerInfo(times, now = new Date()) {
+  const currentMinutes = now.getHours() * 60 + now.getMinutes()
+
+  const prayerList = [
+    { id: 'fajr', name: 'İmsak', timeStr: times.fajr },
+    { id: 'sunrise', name: 'Güneş', timeStr: times.sunrise },
+    { id: 'dhuhr', name: 'Öğle', timeStr: times.dhuhr },
+    { id: 'asr', name: 'İkindi', timeStr: times.asr },
+    { id: 'maghrib', name: 'Akşam', timeStr: times.maghrib },
+    { id: 'isha', name: 'Yatsı', timeStr: times.isha }
+  ]
+
+  const parseToMinutes = (str) => {
+    const [h, m] = str.split(':').map(Number)
+    return h * 60 + m
+  }
+
+  for (let i = 0; i < prayerList.length; i++) {
+    const pMinutes = parseToMinutes(prayerList[i].timeStr)
+    if (pMinutes > currentMinutes) {
+      const diff = pMinutes - currentMinutes
+      const h = Math.floor(diff / 60)
+      const m = diff % 60
+      const remainingStr = h > 0 ? `${h} sa ${m} dk` : `${m} dk`
+      return {
+        nextPrayer: prayerList[i],
+        remainingStr,
+        remainingMinutes: diff,
+        currentPrayer: i > 0 ? prayerList[i - 1] : prayerList[prayerList.length - 1]
+      }
+    }
+  }
+
+  // If after Isha, next is tomorrow's Fajr
+  const fajrMinutes = parseToMinutes(times.fajr)
+  const diff = (24 * 60 - currentMinutes) + fajrMinutes
+  const h = Math.floor(diff / 60)
+  const m = diff % 60
+  return {
+    nextPrayer: prayerList[0],
+    remainingStr: `${h} sa ${m} dk`,
+    remainingMinutes: diff,
+    currentPrayer: prayerList[prayerList.length - 1]
+  }
+}
+
+// Qibla Direction Calculator (Degrees from True North)
+export function calculateQiblaAngle(lat, lng) {
+  const kaabaLat = 21.4225
+  const kaabaLng = 39.8262
+
+  const phi1 = d2r(lat)
+  const phi2 = d2r(kaabaLat)
+  const deltaLambda = d2r(kaabaLng - lng)
+
+  const y = Math.sin(deltaLambda)
+  const x = Math.cos(phi1) * Math.tan(phi2) - Math.sin(phi1) * Math.cos(deltaLambda)
+
+  let qibla = r2d(Math.atan2(y, x))
+  qibla = (qibla + 360) % 360
+  return Math.round(qibla * 10) / 10
+}
+
+// Kerahat (Makruh) Times Calculation
+export function getKerahatInfo(times, now = new Date()) {
+  const currentMinutes = now.getHours() * 60 + now.getMinutes()
+
+  const parseToMinutes = (str) => {
+    if (!str) return 0
+    const [h, m] = str.split(':').map(Number)
+    return h * 60 + m
+  }
+
+  const formatFromMinutes = (mins) => {
+    let norm = (mins + 1440) % 1440
+    const h = Math.floor(norm / 60)
+    const m = norm % 60
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
+  }
+
+  const sunriseM = parseToMinutes(times.sunrise)
+  const dhuhrM = parseToMinutes(times.dhuhr)
+  const maghribM = parseToMinutes(times.maghrib)
+
+  // 1. Tulu Kerahati (Sunrise): Sunrise -> +45 min
+  const tuluStart = sunriseM
+  const tuluEnd = sunriseM + 45
+
+  // 2. İstiva Kerahati (Zawal): Dhuhr - 45 min -> Dhuhr
+  const istivaStart = dhuhrM - 45
+  const istivaEnd = dhuhrM
+
+  // 3. Gurub Kerahati (Sunset): Maghrib - 45 min -> Maghrib
+  const gurubStart = maghribM - 45
+  const gurubEnd = maghribM
+
+  const kerahatWindows = [
+    {
+      id: 'tulu',
+      name: 'Güneş Doğuş (Tulû) Kerahati',
+      shortName: 'Güneş Doğuş Kerahati',
+      startM: tuluStart,
+      endM: tuluEnd,
+      startStr: formatFromMinutes(tuluStart),
+      endStr: formatFromMinutes(tuluEnd),
+      description: 'Güneş doğduktan sonra yaklaşık 45 dakika boyunca kaza namazı kılınması mekruhtur.'
+    },
+    {
+      id: 'istiva',
+      name: 'Öğle Öncesi (İstiva/Zeval) Kerahati',
+      shortName: 'Zeval Kerahati',
+      startM: istivaStart,
+      endM: istivaEnd,
+      startStr: formatFromMinutes(istivaStart),
+      endStr: formatFromMinutes(istivaEnd),
+      description: 'Güneş tam tepe noktasındayken (Öğle ezanından önceki 45 dakika) kaza namazı kılınması mekruhtur.'
+    },
+    {
+      id: 'gurub',
+      name: 'Güneş Batış (Gurûb) Kerahati',
+      shortName: 'Güneş Batış Kerahati',
+      startM: gurubStart,
+      endM: gurubEnd,
+      startStr: formatFromMinutes(gurubStart),
+      endStr: formatFromMinutes(gurubEnd),
+      description: 'Güneş batmadan önceki 45 dakika içinde (o günün ikindisi hariç) kaza namazı kılınması mekruhtur.'
+    }
+  ]
+
+  // Check if currently inside any Kerahat window
+  for (const win of kerahatWindows) {
+    if (currentMinutes >= win.startM && currentMinutes < win.endM) {
+      const remaining = win.endM - currentMinutes
+      return {
+        isKerahat: true,
+        currentWindow: win,
+        remainingMinutes: remaining,
+        allWindows: kerahatWindows
+      }
+    }
+  }
+
+  // Find next upcoming Kerahat window
+  let nextWin = kerahatWindows.find(w => w.startM > currentMinutes)
+  let startsIn = 0
+
+  if (nextWin) {
+    startsIn = nextWin.startM - currentMinutes
+  } else {
+    // Next is tomorrow's Tulu
+    nextWin = kerahatWindows[0]
+    startsIn = (1440 - currentMinutes) + kerahatWindows[0].startM
+  }
+
+  return {
+    isKerahat: false,
+    nextWindow: nextWin,
+    startsInMinutes: startsIn,
+    allWindows: kerahatWindows
+  }
+}

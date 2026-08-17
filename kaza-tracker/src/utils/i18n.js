@@ -1,0 +1,577 @@
+// Internationalization (i18n) dictionary for Turkish, English, and German
+
+export const LANGUAGES = [
+  { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
+  { code: 'en', name: 'English', flag: '🇬🇧' },
+  { code: 'de', name: 'Deutsch', flag: '🇩🇪' }
+]
+
+export const translations = {
+  tr: {
+    appTitle: 'Kaza Namazı Takibi',
+    appSubtitle: 'Kişisel Kaza & Günlük Namaz Defteri',
+    streakBadge: '🔥 {n} Gün',
+    streakTitle: 'En Uzun Seri: {n} gün',
+    
+    // Overview Cards
+    remainingDays: 'Kalan Gün',
+    completedPrayers: 'Kılınan Vakit',
+    remainingPrayers: 'Kalan Vakit',
+    overallProgress: 'Genel İlerleme Oranı',
+    overallCompleted: '%{rate} Tamamlandı',
+    
+    // Prayer Times Banner
+    todaysPrayerTimes: 'Günün Ezan Vakitleri',
+    nextPrayerRemaining: '{name} vaktine {time} kaldı',
+    imsak: 'İmsak',
+    sunrise: 'Güneş',
+    dhuhr: 'Öğle',
+    asr: 'İkindi',
+    maghrib: 'Akşam',
+    isha: 'Yatsı',
+    witr: 'Vitir',
+    
+    // Kerahat
+    kerahatWarningTitle: 'Kerahat Vakti: {name}',
+    kerahatWarningDesc: '{start} - {end} (Kalan: {min} dk). Kaza kılınması mekruhtur.',
+    kerahatDetailLink: 'Detay',
+    kerahatSafeTime: 'Kaza Namazı Kılınabilir Vakit',
+    kerahatNext: 'Sonraki Kerahat: {name} - {time}',
+    kerahatInfoBtn: 'Kerahatler ℹ️',
+    kerahatBadgeActive: '⚠️ Kerahat Vakti',
+    kerahatGuideTitle: 'Kerahat Vakitleri Rehberi',
+    kerahatGuideSubtitle: 'Günün Mekruh Sayılan Namaz Vakitleri',
+    kerahatFiqhNote: '💡 Fıkhi Bilgi: Bu üç vakitte farz veya kaza namazı kılınması Hanefi mezhebine göre tahrimen mekruhtur. Bu vakitler dışında gece ve gündüz her an kaza namazı kılınabilir.',
+    tuluName: 'Güneş Doğuş (Tulû) Kerahati',
+    tuluShort: 'Güneş Doğuş Kerahati',
+    tuluDesc: 'Güneş doğduktan sonra yaklaşık 45 dakika boyunca kaza namazı kılınması mekruhtur.',
+    istivaName: 'Öğle Öncesi (İstiva/Zeval) Kerahati',
+    istivaShort: 'Zeval Kerahati',
+    istivaDesc: 'Güneş tam tepe noktasındayken (Öğle ezanından önceki 45 dakika) kaza namazı kılınması mekruhtur.',
+    gurubName: 'Güneş Batış (Gurûb) Kerahati',
+    gurubShort: 'Güneş Batış Kerahati',
+    gurubDesc: 'Güneş batmadan önceki 45 dakika içinde (o günün ikindisi hariç) kaza namazı kılınması mekruhtur.',
+
+    // Trend Chart
+    trendChartTitle: 'Kılınan Namaz Grafiği',
+    weeklyPerformance: 'Son 7 Günlük Performans',
+    monthlyPerformance: 'Son 30 Günlük Performans',
+    weekly: 'Haftalık',
+    monthly: 'Aylık',
+    total: 'Toplam:',
+    successRate: 'Başarı Oranı:',
+    vakitUnit: 'Vakit',
+
+    // Calendar
+    calendarTodayBtn: 'Bugün',
+    prevYear: 'Önceki Yıl (-1 Yıl)',
+    nextYear: 'Sonraki Yıl (+1 Yıl)',
+    prevMonth: 'Önceki Ay (-1 Ay)',
+    nextMonth: 'Sonraki Ay (+1 Ay)',
+    legendMissing: 'Eksik',
+    legendPartial: 'Kısmi',
+    legendComplete: 'Tamam',
+    daysShort: ['Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pz'],
+    monthNames: [
+      'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+      'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
+    ],
+
+    // Quick Batch Actions
+    batchTitle: 'Hızlı Toplu Kaza İşlemi',
+    batchSubtitle: 'Tüm vakitleri (6 Vakit) tek tıkla düşürün veya geri alın',
+    minusFullDay: '-1 Günlük Kaza',
+    plusFullDay: '+1 Günlük Kaza Kıldım',
+    minusFullDayTitle: 'Tüm vakitlerden 1 adet kaza geri al',
+    plusFullDayTitle: 'Tüm vakitlerden 1 adet kaza kılındı düş',
+
+    // Counters
+    kazaCountersTitle: 'Kaza Vakit Sayaçları',
+    syncBadge: 'Takvim & Sayaç Senkronize',
+    kalanLabel: 'kalan',
+    progressLabel: 'İlerleme',
+    completedBadgeTitle: 'Toplam Kılınan Vakit (Takvim + Sayaç)',
+    decKazaTitle: 'Kaza Azalt (-1)',
+    incKazaTitle: 'Hızlı Kaza Ekle (+1)',
+
+    // Prayers
+    prayerFajr: 'Sabah',
+    prayerDhuhr: 'Öğle',
+    prayerAsr: 'İkindi',
+    prayerMaghrib: 'Akşam',
+    prayerIsha: 'Yatsı',
+    prayerWitr: 'Vitir',
+
+    // Day Modal
+    dayModalSubtitle: 'Vakitleri işaretleyin',
+    toggleAllDayBtn: 'Hepsini İşaretle / Temizle',
+
+    // Qibla Modal
+    qiblaTitle: 'Kıble Pusulası',
+    qiblaSubtitle: '{city} için Kıble Yönü',
+    qiblaAligned: '✓ Kâbe Yönündesiniz (Hizalandı)',
+    qiblaNotAligned: 'Telefonunuzu çevirerek Kâbe simgesini üste getirin',
+    qiblaStartBtn: '🧭 Canlı Pusula Sensörünü Başlat',
+    qiblaActiveInfo: 'Pusula aktif. Cihazınızı yatay ve manyetik alanlardan uzak tutunuz.',
+    compassNorth: 'K',
+    compassSouth: 'G',
+    compassEast: 'D',
+    compassWest: 'B',
+    dirNorth: 'Kuzey',
+    dirNorthEast: 'Kuzeydoğu',
+    dirEast: 'Doğu',
+    dirSouthEast: 'Güneydoğu',
+    dirSouth: 'Güney',
+    dirSouthWest: 'Güneybatı',
+    dirWest: 'Batı',
+    dirNorthWest: 'Kuzeybatı',
+
+    // Range Batch Modal
+    rangeModalTitle: 'Toplu Tarih Aralığı İşlemleri',
+    rangeModalSubtitle: 'İki tarih arasındaki tüm günleri toplu düzenleyin',
+    startDateLabel: 'Başlangıç Tarihi',
+    endDateLabel: 'Bitiş Tarihi',
+    rangeFillBtn: '✓ Aralıktaki Tüm Günleri "Tamamlandı" Yap',
+    rangeClearBtn: '✕ Aralıktaki Kayıtları Temizle',
+
+    // Settings Modal
+    settingsTitle: 'Ayarlar & Veri Yönetimi',
+    themeLabel: 'Görsel Tema Seçimi',
+    languageLabel: 'Dil Seçimi (Language / Sprache)',
+    paramsTitle: 'Hesaplama Parametreleri',
+    dobLabel: 'Doğum Tarihi',
+    bulugLabel: 'Buluğ Çağı Başlangıç Tarihi',
+    regularStartLabel: 'Düzenli Namaza Başlama Tarihi',
+    quickFillBtn: '⚡ Doldur',
+    quickFillBtnTitle: 'Başlangıç tarihinden düne kadar olan günleri takvime tamamlandı olarak doldur',
+    regularStartHint: 'Bu tarih belirlendiğinde, başlangıçtan düne kadar olan günler takvimde otomatik olarak kılındı (tamamlandı) sayılır.',
+    calcSaveBtn: 'Kaza Borcunu Hesapla & Senkronize Et',
+    backupTitle: 'Veri Yedekleme & Geri Yükleme',
+    backupSubtitle: 'Tüm takvim ve kaza verilerinizi dosya olarak yedekleyebilir veya geri yükleyebilirsiniz.',
+    exportBackupBtn: '💾 Yedeği İndir (JSON)',
+    importBackupBtn: '📂 Yedek Yükle',
+    dangerZoneTitle: 'Bireysel Sıfırlama Seçenekleri',
+    resetCalendarBtn: '📅 Sadece Takvimi Sıfırla',
+    resetCountersBtn: '🔢 Sadece Sayaçları Sıfırla',
+    resetParamsBtn: '⚙️ Parametreleri Sıfırla',
+    resetAllBtn: '🚨 Tam Sıfırlama (Her Şey)',
+
+    // Confirm Dialog
+    confirmCancelBtn: 'Vazgeç',
+    confirmExecuteBtn: 'Evet, Sıfırla',
+    resetCalendarTitle: 'Takvim Kayıtlarını Sıfırla',
+    resetCalendarMsg: 'Takvimdeki tüm gün işaretlemeleri silinecektir. Profiliniz ve kaza sayaçlarınız korunacaktır. Emin misiniz?',
+    resetCountersTitle: 'Kaza Sayaçlarını Sıfırla',
+    resetCountersMsg: 'Hızlı kaza sayaçlarınız sıfırlanacaktır. Takvim ve profil kayıtlarınız korunacaktır. Emin misiniz?',
+    resetParamsTitle: 'Hesaplama Parametrelerini Sıfırla',
+    resetParamsMsg: 'Doğum tarihi, buluğ ve başlama tarihi parametreleriniz temizlenecektir. Takvim kayıtlarınız korunacaktır. Emin misiniz?',
+    resetAllTitle: 'Tüm Verileri Fabrika Ayarlarına Sıfırla',
+    resetAllMsg: 'DİKKAT: Takvim kayıtları, sayaçlar ve tüm profil ayarlarınız kalıcı olarak silinecektir. Bu işlem geri alınamaz!',
+
+    // Toasts
+    toastValidDate: 'Lütfen geçerli bir başlama tarihi girin.',
+    toastDateFuture: 'Başlangıç tarihi bugünden veya dünden sonraki bir tarih olamaz.',
+    toastAutoCompleted: '✓ {n} gün ({start} ~ {end}) takvimde kılındı olarak tamamlandı!',
+    toastDebtCalculated: 'Kaza borcu hesaplandı & {n} gün takvime kılındı olarak işlendi!',
+    toastDebtSaved: 'Kaza borcu başarıyla hesaplandı ve kaydedildi.',
+    toastFullDayAdded: '✓ +1 Günlük tam kaza (6 vakit) başarıyla kılındı olarak düşüldü!',
+    toastFullDayRemoved: '-1 Günlük kaza işlemi geri alındı.',
+    toastNoKazaToDecrement: 'Geri alınacak kayıtlı ekstra kaza bulunamadı.',
+    toastRangeInvalid: 'Lütfen başlangıç ve bitiş tarihlerini seçin.',
+    toastRangeOrder: 'Başlangıç tarihi bitiş tarihinden sonra olamaz.',
+    toastRangeFilled: '✓ {n} gün takvimde "Tamamlandı" olarak işaretlendi.',
+    toastRangeCleared: '✓ {n} günün takvim kayıtları temizlendi.',
+    toastBackupExported: '✓ Veri yedeği başarıyla indirildi.',
+    toastBackupImported: '✓ Yedek başarıyla geri yüklendi!',
+    toastBackupInvalid: 'Hata: Geçersiz yedek dosyası.',
+    toastCalendarReset: '✓ Takvim kayıtları başarıyla sıfırlandı.',
+    toastCountersReset: '✓ Kaza sayaçları başarıyla sıfırlandı.',
+    toastParamsReset: '✓ Hesaplama parametreleri sıfırlandı.',
+    toastAllReset: '✓ Tüm veriler tamamen sıfırlandı.',
+    toastCompassActive: '✓ Pusula sensörü aktif!',
+    toastCompassNoSensor: 'Cihazınızda pusula sensörü bulunamadı.',
+    toastCompassDenied: 'Pusula sensörü izni verilmedi.'
+  },
+
+  en: {
+    appTitle: 'Qadha Prayer Tracker',
+    appSubtitle: 'Personal Makeup & Daily Prayer Journal',
+    streakBadge: '🔥 {n} Days',
+    streakTitle: 'Best Streak: {n} days',
+    
+    // Overview Cards
+    remainingDays: 'Days Left',
+    completedPrayers: 'Completed',
+    remainingPrayers: 'Remaining',
+    overallProgress: 'Overall Progress',
+    overallCompleted: '{rate}% Completed',
+    
+    // Prayer Times Banner
+    todaysPrayerTimes: "Today's Prayer Times",
+    nextPrayerRemaining: '{time} left until {name}',
+    imsak: 'Fajr',
+    sunrise: 'Sunrise',
+    dhuhr: 'Dhuhr',
+    asr: 'Asr',
+    maghrib: 'Maghrib',
+    isha: 'Isha',
+    witr: 'Witr',
+    
+    // Kerahat
+    kerahatWarningTitle: 'Kerahat Time: {name}',
+    kerahatWarningDesc: '{start} - {end} ({min} mins left). Makeup prayers are makruh (disliked) now.',
+    kerahatDetailLink: 'Details',
+    kerahatSafeTime: 'Safe Time for Makeup (Qadha) Prayers',
+    kerahatNext: 'Next Kerahat: {name} - {time}',
+    kerahatInfoBtn: 'Kerahat Times ℹ️',
+    kerahatBadgeActive: '⚠️ Kerahat Time',
+    kerahatGuideTitle: 'Kerahat Times Guide',
+    kerahatGuideSubtitle: 'Times of Day When Prayers Are Makruh',
+    kerahatFiqhNote: '💡 Fiqh Note: Performing obligatory or makeup prayers during these three intervals is considered strictly disliked (makruh tahrimi). Outside these times, makeup prayers can be performed at any hour of day or night.',
+    tuluName: 'Sunrise (Tulu) Kerahat',
+    tuluShort: 'Sunrise Kerahat',
+    tuluDesc: 'Performing prayers is makruh for approximately 45 minutes right after sunrise.',
+    istivaName: 'Pre-Noon Zawal (Istiva) Kerahat',
+    istivaShort: 'Zawal Kerahat',
+    istivaDesc: 'Performing prayers is makruh when the sun is at its zenith (45 minutes before Dhuhr).',
+    gurubName: 'Sunset (Gurub) Kerahat',
+    gurubShort: 'Sunset Kerahat',
+    gurubDesc: 'Performing makeup prayers is makruh during the 45 minutes before sunset.',
+
+    // Trend Chart
+    trendChartTitle: 'Completed Prayers Trend',
+    weeklyPerformance: 'Last 7 Days Performance',
+    monthlyPerformance: 'Last 30 Days Performance',
+    weekly: 'Weekly',
+    monthly: 'Monthly',
+    total: 'Total:',
+    successRate: 'Success Rate:',
+    vakitUnit: 'Prayers',
+
+    // Calendar
+    calendarTodayBtn: 'Today',
+    prevYear: 'Previous Year (-1 Yr)',
+    nextYear: 'Next Year (+1 Yr)',
+    prevMonth: 'Previous Month (-1 Mo)',
+    nextMonth: 'Next Month (+1 Mo)',
+    legendMissing: 'Missing',
+    legendPartial: 'Partial',
+    legendComplete: 'Complete',
+    daysShort: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
+    monthNames: [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ],
+
+    // Quick Batch Actions
+    batchTitle: 'Quick Full-Day Qadha Action',
+    batchSubtitle: 'Add or revert all 6 prayers with a single click',
+    minusFullDay: '-1 Day Qadha',
+    plusFullDay: '+1 Full Day Completed',
+    minusFullDayTitle: 'Subtract 1 makeup prayer from all 6 prayers',
+    plusFullDayTitle: 'Mark 1 makeup prayer completed across all 6 prayers',
+
+    // Counters
+    kazaCountersTitle: 'Qadha Fast Counters',
+    syncBadge: 'Calendar & Counter Synced',
+    kalanLabel: 'left',
+    progressLabel: 'Progress',
+    completedBadgeTitle: 'Total Completed Prayers (Calendar + Counter)',
+    decKazaTitle: 'Decrease Qadha (-1)',
+    incKazaTitle: 'Quick Add Qadha (+1)',
+
+    // Prayers
+    prayerFajr: 'Fajr',
+    prayerDhuhr: 'Dhuhr',
+    prayerAsr: 'Asr',
+    prayerMaghrib: 'Maghrib',
+    prayerIsha: 'Isha',
+    prayerWitr: 'Witr',
+
+    // Day Modal
+    dayModalSubtitle: 'Check completed prayers',
+    toggleAllDayBtn: 'Check / Uncheck All',
+
+    // Qibla Modal
+    qiblaTitle: 'Qibla Compass',
+    qiblaSubtitle: 'Qibla Direction for {city}',
+    qiblaAligned: '✓ Facing Kaaba (Aligned)',
+    qiblaNotAligned: 'Rotate your phone until the Kaaba icon is at the top',
+    qiblaStartBtn: '🧭 Start Live Compass Sensor',
+    qiblaActiveInfo: 'Compass is active. Keep device flat and away from magnetic objects.',
+    compassNorth: 'N',
+    compassSouth: 'S',
+    compassEast: 'E',
+    compassWest: 'W',
+    dirNorth: 'North',
+    dirNorthEast: 'Northeast',
+    dirEast: 'East',
+    dirSouthEast: 'Southeast',
+    dirSouth: 'South',
+    dirSouthWest: 'Southwest',
+    dirWest: 'West',
+    dirNorthWest: 'Northwest',
+
+    // Range Batch Modal
+    rangeModalTitle: 'Date Range Batch Actions',
+    rangeModalSubtitle: 'Batch update days between two dates',
+    startDateLabel: 'Start Date',
+    endDateLabel: 'End Date',
+    rangeFillBtn: '✓ Mark All Days as "Complete"',
+    rangeClearBtn: '✕ Clear Records in Range',
+
+    // Settings Modal
+    settingsTitle: 'Settings & Data Management',
+    themeLabel: 'Color Theme Selection',
+    languageLabel: 'Language (Dil / Sprache)',
+    paramsTitle: 'Calculation Parameters',
+    dobLabel: 'Date of Birth',
+    bulugLabel: 'Puberty (Bulugh) Start Date',
+    regularStartLabel: 'Regular Prayer Start Date',
+    quickFillBtn: '⚡ Fill',
+    quickFillBtnTitle: 'Auto-fill calendar days from start date up to yesterday',
+    regularStartHint: 'When set, all days from this date up to yesterday are automatically marked as completed in the calendar.',
+    calcSaveBtn: 'Calculate Debt & Sync Calendar',
+    backupTitle: 'Data Backup & Restore',
+    backupSubtitle: 'Export or import your full calendar and qadha records as a backup file.',
+    exportBackupBtn: '💾 Download Backup (JSON)',
+    importBackupBtn: '📂 Restore Backup',
+    dangerZoneTitle: 'Individual Reset Options',
+    resetCalendarBtn: '📅 Reset Calendar Only',
+    resetCountersBtn: '🔢 Reset Counters Only',
+    resetParamsBtn: '⚙️ Reset Parameters',
+    resetAllBtn: '🚨 Factory Reset (Everything)',
+
+    // Confirm Dialog
+    confirmCancelBtn: 'Cancel',
+    confirmExecuteBtn: 'Yes, Reset',
+    resetCalendarTitle: 'Reset Calendar Records',
+    resetCalendarMsg: 'All calendar day marks will be deleted. Profile parameters and qadha counters will be preserved. Are you sure?',
+    resetCountersTitle: 'Reset Qadha Counters',
+    resetCountersMsg: 'Manual fast counters will be reset to zero. Calendar logs and profile parameters will be preserved. Are you sure?',
+    resetParamsTitle: 'Reset Calculation Parameters',
+    resetParamsMsg: 'Birth date, puberty and start dates will be cleared. Calendar logs will be preserved. Are you sure?',
+    resetAllTitle: 'Factory Reset All Data',
+    resetAllMsg: 'CAUTION: All calendar logs, counters, and settings will be permanently erased. This action cannot be undone!',
+
+    // Toasts
+    toastValidDate: 'Please select a valid start date.',
+    toastDateFuture: 'Start date cannot be after today or yesterday.',
+    toastAutoCompleted: '✓ {n} days ({start} ~ {end}) marked as completed!',
+    toastDebtCalculated: 'Debt calculated & {n} days recorded on calendar!',
+    toastDebtSaved: 'Qadha debt calculated and saved successfully.',
+    toastFullDayAdded: '✓ +1 Full day qadha (6 prayers) recorded!',
+    toastFullDayRemoved: '-1 Day qadha action reverted.',
+    toastNoKazaToDecrement: 'No extra qadha recorded to decrement.',
+    toastRangeInvalid: 'Please select start and end dates.',
+    toastRangeOrder: 'Start date cannot be after end date.',
+    toastRangeFilled: '✓ {n} days marked as "Complete" in calendar.',
+    toastRangeCleared: '✓ Records cleared for {n} days.',
+    toastBackupExported: '✓ Data backup downloaded successfully.',
+    toastBackupImported: '✓ Backup restored successfully!',
+    toastBackupInvalid: 'Error: Invalid backup file format.',
+    toastCalendarReset: '✓ Calendar logs reset successfully.',
+    toastCountersReset: '✓ Qadha counters reset successfully.',
+    toastParamsReset: '✓ Parameters reset successfully.',
+    toastAllReset: '✓ All data completely reset.',
+    toastCompassActive: '✓ Compass sensor active!',
+    toastCompassNoSensor: 'No compass sensor found on this device.',
+    toastCompassDenied: 'Compass sensor permission was denied.'
+  },
+
+  de: {
+    appTitle: 'Qada Gebets-Tracker',
+    appSubtitle: 'Persönliches Nachhol- & Gebetstagebuch',
+    streakBadge: '🔥 {n} Tage',
+    streakTitle: 'Bester Streak: {n} Tage',
+    
+    // Overview Cards
+    remainingDays: 'Verbleibende Tage',
+    completedPrayers: 'Verrichtet',
+    remainingPrayers: 'Offen',
+    overallProgress: 'Gesamtfortschritt',
+    overallCompleted: '{rate}% Erledigt',
+    
+    // Prayer Times Banner
+    todaysPrayerTimes: 'Heutige Gebetszeiten',
+    nextPrayerRemaining: 'Noch {time} bis zum {name}',
+    imsak: 'Fadschr',
+    sunrise: 'Sonnenaufgang',
+    dhuhr: 'Dhuhr',
+    asr: 'Asr',
+    maghrib: 'Maghrib',
+    isha: 'Ischaa',
+    witr: 'Witr',
+    
+    // Kerahat
+    kerahatWarningTitle: 'Karahat-Zeit: {name}',
+    kerahatWarningDesc: '{start} - {end} (Noch {min} Min). Nachholgebete sind jetzt makruh (unerwünscht).',
+    kerahatDetailLink: 'Details',
+    kerahatSafeTime: 'Erlaubte Zeit für Nachholgebete (Qada)',
+    kerahatNext: 'Nächste Karahat-Zeit: {name} - {time}',
+    kerahatInfoBtn: 'Karahat-Zeiten ℹ️',
+    kerahatBadgeActive: '⚠️ Karahat-Zeit',
+    kerahatGuideTitle: 'Karahat-Zeiten Leitfaden',
+    kerahatGuideSubtitle: 'Zeiten, in denen Gebete makruh sind',
+    kerahatFiqhNote: '💡 Fiqh-Hinweis: Das Verrichten von Pflicht- oder Nachholgebeten in diesen drei Zeitfenstern ist nach hanafitischer Rechtsschule makruh tahrimi (streng unerwünscht). Außerhalb dieser Zeiten können Nachholgebete zu jeder Tages- und Nachtzeit verrichtet werden.',
+    tuluName: 'Sonnenaufgangs-Karahat (Tulu)',
+    tuluShort: 'Sonnenaufgangs-Karahat',
+    tuluDesc: 'In den ersten ca. 45 Minuten nach Sonnenaufgang sind Nachholgebete makruh.',
+    istivaName: 'Mittags-Zenit-Karahat (Istiva/Zawal)',
+    istivaShort: 'Zenit-Karahat',
+    istivaDesc: 'Wenn die Sonne am höchsten Punkt steht (ca. 45 Minuten vor Dhuhr), sind Gebete makruh.',
+    gurubName: 'Sonnenuntergangs-Karahat (Gurub)',
+    gurubShort: 'Sonnenuntergangs-Karahat',
+    gurubDesc: 'In den 45 Minuten vor Sonnenuntergang sind Nachholgebete makruh.',
+
+    // Trend Chart
+    trendChartTitle: 'Gebets-Verlauf',
+    weeklyPerformance: 'Letzte 7 Tage',
+    monthlyPerformance: 'Letzte 30 Tage',
+    weekly: 'Wöchentlich',
+    monthly: 'Monatlich',
+    total: 'Gesamt:',
+    successRate: 'Erfolgsquote:',
+    vakitUnit: 'Gebete',
+
+    // Calendar
+    calendarTodayBtn: 'Heute',
+    prevYear: 'Vorheriges Jahr (-1 J)',
+    nextYear: 'Nächstes Jahr (+1 J)',
+    prevMonth: 'Vorheriger Monat (-1 M)',
+    nextMonth: 'Nächster Monat (+1 M)',
+    legendMissing: 'Fehlend',
+    legendPartial: 'Teilweise',
+    legendComplete: 'Vollständig',
+    daysShort: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
+    monthNames: [
+      'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
+      'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'
+    ],
+
+    // Quick Batch Actions
+    batchTitle: 'Schnelle Ganztages-Aktion',
+    batchSubtitle: 'Alle 6 Gebete mit einem Klick verbuchen oder zurücksetzen',
+    minusFullDay: '-1 Tag Qada',
+    plusFullDay: '+1 Tag Komplett Verrichtet',
+    minusFullDayTitle: '1 Nachholgebet von allen 6 Gebeten abziehen',
+    plusFullDayTitle: '1 Nachholgebet für alle 6 Gebete als verrichtet eintragen',
+
+    // Counters
+    kazaCountersTitle: 'Qada-Schnellzähler',
+    syncBadge: 'Kalender & Zähler synchron',
+    kalanLabel: 'offen',
+    progressLabel: 'Fortschritt',
+    completedBadgeTitle: 'Insgesamt verrichtete Gebete (Kalender + Zähler)',
+    decKazaTitle: 'Qada verringern (-1)',
+    incKazaTitle: 'Qada schnell hinzufügen (+1)',
+
+    // Prayers
+    prayerFajr: 'Fadschr (Morgen)',
+    prayerDhuhr: 'Dhuhr (Mittag)',
+    prayerAsr: 'Asr (Nachmittag)',
+    prayerMaghrib: 'Maghrib (Abend)',
+    prayerIsha: 'Ischaa (Nacht)',
+    prayerWitr: 'Witr',
+
+    // Day Modal
+    dayModalSubtitle: 'Gebete markieren',
+    toggleAllDayBtn: 'Alle markieren / abwählen',
+
+    // Qibla Modal
+    qiblaTitle: 'Qibla-Kompass',
+    qiblaSubtitle: 'Qibla-Richtung für {city}',
+    qiblaAligned: '✓ Zur Kaaba ausgerichtet (Optimal)',
+    qiblaNotAligned: 'Drehen Sie das Smartphone, bis das Kaaba-Symbol oben steht',
+    qiblaStartBtn: '🧭 Live-Kompass aktivieren',
+    qiblaActiveInfo: 'Kompass ist aktiv. Smartphone waagerecht und fern von Magneten halten.',
+    compassNorth: 'N',
+    compassSouth: 'S',
+    compassEast: 'O',
+    compassWest: 'W',
+    dirNorth: 'Norden',
+    dirNorthEast: 'Nordost',
+    dirEast: 'Osten',
+    dirSouthEast: 'Südost',
+    dirSouth: 'Süden',
+    dirSouthWest: 'Südwest',
+    dirWest: 'Westen',
+    dirNorthWest: 'Nordwest',
+
+    // Range Batch Modal
+    rangeModalTitle: 'Datumsbereich Stapelverarbeitung',
+    rangeModalSubtitle: 'Tage zwischen zwei Daten stapelweise bearbeiten',
+    startDateLabel: 'Startdatum',
+    endDateLabel: 'Enddatum',
+    rangeFillBtn: '✓ Alle Tage als "Vollständig" markieren',
+    rangeClearBtn: '✕ Einträge im Bereich löschen',
+
+    // Settings Modal
+    settingsTitle: 'Einstellungen & Datenverwaltung',
+    themeLabel: 'Design-Farbschema',
+    languageLabel: 'Sprache (Language / Dil)',
+    paramsTitle: 'Berechnungsparameter',
+    dobLabel: 'Geburtsdatum',
+    bulugLabel: 'Beginn der Religionsmündigkeit (Bulugh)',
+    regularStartLabel: 'Startdatum des regelmäßigen Gebets',
+    quickFillBtn: '⚡ Füllen',
+    quickFillBtnTitle: 'Tage ab Startdatum bis gestern automatisch im Kalender eintragen',
+    regularStartHint: 'Sobald gesetzt, werden alle Tage von diesem Datum bis gestern automatisch als verrichtet markiert.',
+    calcSaveBtn: 'Schuld berechnen & synchronisieren',
+    backupTitle: 'Datensicherung & Wiederherstellung',
+    backupSubtitle: 'Sichern Sie alle Kalender- und Qada-Einträge als JSON-Datei.',
+    exportBackupBtn: '💾 Sicherung herunterladen (JSON)',
+    importBackupBtn: '📂 Sicherung laden',
+    dangerZoneTitle: 'Individuelle Reset-Optionen',
+    resetCalendarBtn: '📅 Nur Kalender zurücksetzen',
+    resetCountersBtn: '🔢 Nur Zähler zurücksetzen',
+    resetParamsBtn: '⚙️ Parameter zurücksetzen',
+    resetAllBtn: '🚨 Werkseinstellungen (Alles löschen)',
+
+    // Confirm Dialog
+    confirmCancelBtn: 'Abbrechen',
+    confirmExecuteBtn: 'Ja, zurücksetzen',
+    resetCalendarTitle: 'Kalendereinträge zurücksetzen',
+    resetCalendarMsg: 'Alle Kalendermarkierungen werden gelöscht. Profilparameter und Zähler bleiben erhalten. Fortfahren?',
+    resetCountersTitle: 'Qada-Zähler zurücksetzen',
+    resetCountersMsg: 'Manuelle Schnellzähler werden auf Null gesetzt. Kalender und Profil bleiben erhalten. Fortfahren?',
+    resetParamsTitle: 'Berechnungsparameter zurücksetzen',
+    resetParamsMsg: 'Geburts-, Bulugh- und Startdaten werden gelöscht. Kalendereinträge bleiben erhalten. Fortfahren?',
+    resetAllTitle: 'Alle Daten auf Werkseinstellungen zurücksetzen',
+    resetAllMsg: 'ACHTUNG: Alle Kalendereinträge, Zähler und Einstellungen werden unwiderruflich gelöscht!',
+
+    // Toasts
+    toastValidDate: 'Bitte ein gültiges Startdatum auswählen.',
+    toastDateFuture: 'Startdatum darf nicht nach heute oder gestern liegen.',
+    toastAutoCompleted: '✓ {n} Tage ({start} ~ {end}) als verrichtet eingetragen!',
+    toastDebtCalculated: 'Schuld berechnet & {n} Tage im Kalender verbucht!',
+    toastDebtSaved: 'Qada-Schuld erfolgreich berechnet und gespeichert.',
+    toastFullDayAdded: '✓ +1 Ganzer Tag Qada (6 Gebete) verbucht!',
+    toastFullDayRemoved: '-1 Tag Qada zurückgenommen.',
+    toastNoKazaToDecrement: 'Keine zusätzlichen Qada zum Verringern vorhanden.',
+    toastRangeInvalid: 'Bitte Start- und Enddatum auswählen.',
+    toastRangeOrder: 'Startdatum darf nicht nach dem Enddatum liegen.',
+    toastRangeFilled: '✓ {n} Tage als "Vollständig" im Kalender markiert.',
+    toastRangeCleared: '✓ Einträge für {n} Tage gelöscht.',
+    toastBackupExported: '✓ Datensicherung erfolgreich heruntergeladen.',
+    toastBackupImported: '✓ Sicherung erfolgreich wiederhergestellt!',
+    toastBackupInvalid: 'Fehler: Ungültiges Dateiformat.',
+    toastCalendarReset: '✓ Kalendereinträge erfolgreich zurückgesetzt.',
+    toastCountersReset: '✓ Qada-Zähler erfolgreich zurückgesetzt.',
+    toastParamsReset: '✓ Parameter erfolgreich zurückgesetzt.',
+    toastAllReset: '✓ Alle Daten vollständig zurückgesetzt.',
+    toastCompassActive: '✓ Kompass-Sensor aktiv!',
+    toastCompassNoSensor: 'Kein Kompass-Sensor auf diesem Gerät gefunden.',
+    toastCompassDenied: 'Zugriff auf Kompass-Sensor verweigert.'
+  }
+}
+
+export function translate(lang, key, params = {}) {
+  const currentDict = translations[lang] || translations.tr
+  let text = currentDict[key] || translations.tr[key] || key
+
+  for (const p in params) {
+    text = text.replace(new RegExp(`\\{${p}\\}`, 'g'), params[p])
+  }
+  return text
+}

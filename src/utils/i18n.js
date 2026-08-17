@@ -182,6 +182,12 @@ export const translations = {
     toastLocUnavailable: 'Konum bilgisi alınamadı.',
     toastLocSuccess: 'Konum güncellendi: {name}',
     toastLocTimeout: 'Konum alma zaman aşımına uğradı.',
+    // Diyanet Sync
+    diyanetBadge: '✓ Diyanet',
+    diyanetSyncing: 'Senkronize ediliyor...',
+    diyanetSourceLabel: 'Kaynak: Diyanet İşleri Başkanlığı Standartları',
+    diyanetOfflineFallback: 'Çevrimdışı Diyanet Algoritması',
+    toastDiyanetSynced: 'Diyanet namaz vakitleri güncellendi: {city}',
 
     // Range Batch Modal
     rangeModalTitle: 'Toplu Tarih Aralığı İşlemleri',
@@ -428,6 +434,12 @@ export const translations = {
     toastLocUnavailable: 'Location information unavailable.',
     toastLocSuccess: 'Location updated: {name}',
     toastLocTimeout: 'Location request timed out.',
+    // Diyanet Sync
+    diyanetBadge: '✓ Diyanet',
+    diyanetSyncing: 'Syncing...',
+    diyanetSourceLabel: 'Source: Presidency of Religious Affairs (Diyanet) Standards',
+    diyanetOfflineFallback: 'Offline Diyanet Algorithm',
+    toastDiyanetSynced: 'Diyanet prayer times updated: {city}',
 
     // Range Batch Modal
     rangeModalTitle: 'Date Range Batch Actions',
@@ -674,6 +686,12 @@ export const translations = {
     toastLocUnavailable: 'Standortinformationen nicht verfügbar.',
     toastLocSuccess: 'Standort aktualisiert: {name}',
     toastLocTimeout: 'Standortabfrage hat Zeitüberschreitung erreicht.',
+    // Diyanet Sync
+    diyanetBadge: '✓ Diyanet',
+    diyanetSyncing: 'Synchronisieren...',
+    diyanetSourceLabel: 'Quelle: Diyanet-Standards (Türkei)',
+    diyanetOfflineFallback: 'Offline-Diyanet-Algorithmus',
+    toastDiyanetSynced: 'Diyanet-Gebetszeiten aktualisiert: {city}',
 
     // Range Batch Modal
     rangeModalTitle: 'Datumsbereich Stapelverarbeitung',

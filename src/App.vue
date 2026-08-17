@@ -128,7 +128,22 @@
           <div class="flex items-center gap-2">
             <span class="text-base">🕌</span>
             <div>
-              <span class="text-xs font-semibold text-neutral-200">{{ t('todaysPrayerTimes') }}</span>
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs font-semibold text-neutral-200">{{ t('todaysPrayerTimes') }}</span>
+                <span 
+                  @click="syncDiyanetTimes(false)"
+                  :class="[
+                    'px-1.5 py-0.5 text-[9px] font-semibold rounded-md border cursor-pointer transition-all flex items-center gap-1 active:scale-95',
+                    isDiyanetSyncing 
+                      ? 'bg-amber-500/20 text-amber-300 border-amber-500/30 animate-pulse' 
+                      : 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/25'
+                  ]"
+                  :title="t('diyanetSourceLabel')"
+                >
+                  <span v-if="isDiyanetSyncing" class="inline-block animate-spin text-[8px]">⏳</span>
+                  <span>{{ isDiyanetSyncing ? t('diyanetSyncing') : t('diyanetBadge') }}</span>
+                </span>
+              </div>
               <div class="flex items-center gap-1.5 mt-0.5">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
                 <span :class="['text-[11px] font-medium', themeClasses.text]">
@@ -1349,6 +1364,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import L from 'leaflet'
 import { 
   calculatePrayerTimes, 
+  fetchDiyanetPrayerTimes,
   getNextPrayerInfo, 
   calculateQiblaAngle, 
   calculateSolarPosition,
@@ -1477,6 +1493,9 @@ const gpsLocation = ref({
   lng: 28.9784
 })
 const nowTimer = ref(new Date())
+const diyanetTimes = ref(null)
+const diyanetSource = ref('diyanet_api')
+const isDiyanetSyncing = ref(false)
 let clockInterval = null
 
 const activeCityObj = computed(() => {
@@ -1485,6 +1504,32 @@ const activeCityObj = computed(() => {
   }
   return cityList.find(c => c.name === selectedCity.value) || cityList[0]
 })
+
+const syncDiyanetTimes = async (silent = true) => {
+  const city = activeCityObj.value
+  if (!city || !city.lat) return
+
+  isDiyanetSyncing.value = true
+  try {
+    const res = await fetchDiyanetPrayerTimes(
+      nowTimer.value,
+      Number(city.lat),
+      Number(city.lng),
+      isGpsActive.value ? '' : city.name
+    )
+    if (res && res.times) {
+      diyanetTimes.value = res.times
+      diyanetSource.value = res.source
+      if (!silent) {
+        showToast(t('toastDiyanetSynced', { city: city.name || selectedCity.value }))
+      }
+    }
+  } catch (e) {
+    console.error(e)
+  } finally {
+    isDiyanetSyncing.value = false
+  }
+}
 
 const fetchUserLocation = (silent = false) => {
   if (!navigator.geolocation) {
@@ -1527,6 +1572,7 @@ const fetchUserLocation = (silent = false) => {
       localStorage.setItem('namaz_use_gps', 'true')
 
       showToast(t('toastLocSuccess', { name: geoInfo.name }))
+      syncDiyanetTimes(true)
     },
     (err) => {
       isLocating.value = false
@@ -1553,9 +1599,13 @@ const selectCityManual = (cityName) => {
   isGpsActive.value = false
   localStorage.setItem('namaz_use_gps', 'false')
   localStorage.setItem('kaza_city', cityName)
+  syncDiyanetTimes(true)
 }
 
 const currentPrayerTimes = computed(() => {
+  if (diyanetTimes.value && diyanetTimes.value.fajr) {
+    return diyanetTimes.value
+  }
   const city = activeCityObj.value
   return calculatePrayerTimes(nowTimer.value, city.lat, city.lng)
 })
@@ -2808,9 +2858,18 @@ onMounted(() => {
   }
 
   // Live timer for prayer times countdown & Kerahat calculation
+  let lastCheckedDate = new Date().getDate()
   clockInterval = setInterval(() => {
-    nowTimer.value = new Date()
+    const n = new Date()
+    nowTimer.value = n
+    if (n.getDate() !== lastCheckedDate) {
+      lastCheckedDate = n.getDate()
+      syncDiyanetTimes(true)
+    }
   }, 30000)
+
+  // Initial Diyanet sync
+  syncDiyanetTimes(true)
 
   if (!p) showSettings.value = true
 })

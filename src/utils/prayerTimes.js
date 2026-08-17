@@ -486,4 +486,72 @@ export async function reverseGeocode(lat, lng, lang = 'tr') {
   return null
 }
 
+// Clean and format time string (e.g. "05:14 (EEST)" -> "05:14")
+function cleanTimeString(str) {
+  if (!str) return '00:00'
+  const match = str.match(/(\d{1,2}:\d{2})/)
+  return match ? match[1] : str.slice(0, 5)
+}
+
+// Fetch Diyanet Prayer Times (Aladhan Method 13) with smart LocalStorage Caching & Offline Fallback
+export async function fetchDiyanetPrayerTimes(date, lat, lng, cityName = '') {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  const dateKey = `${y}-${m}-${d}`
+  const cacheKey = `namaz_diyanet_${cityName || `${Math.round(lat * 100)}_${Math.round(lng * 100)}`}_${dateKey}`
+
+  // 1. Check LocalStorage Cache
+  try {
+    const cached = localStorage.getItem(cacheKey)
+    if (cached) {
+      const parsed = JSON.parse(cached)
+      if (parsed && parsed.fajr && parsed.dhuhr) {
+        return { times: parsed, source: 'diyanet_cache' }
+      }
+    }
+  } catch (e) {}
+
+  // 2. Fetch from Aladhan Diyanet API (method=13)
+  try {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 5000)
+
+    const timestamp = Math.floor(date.getTime() / 1000)
+    const url = `https://api.aladhan.com/v1/timings/${timestamp}?latitude=${lat}&longitude=${lng}&method=13`
+
+    const res = await fetch(url, { signal: controller.signal })
+    clearTimeout(timeoutId)
+
+    if (res.ok) {
+      const json = await res.json()
+      if (json && json.data && json.data.timings) {
+        const t = json.data.timings
+        const times = {
+          fajr: cleanTimeString(t.Fajr),
+          sunrise: cleanTimeString(t.Sunrise),
+          dhuhr: cleanTimeString(t.Dhuhr),
+          asr: cleanTimeString(t.Asr),
+          maghrib: cleanTimeString(t.Maghrib),
+          isha: cleanTimeString(t.Isha)
+        }
+
+        // Cache result in localStorage
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify(times))
+        } catch (e) {}
+
+        return { times, source: 'diyanet_api' }
+      }
+    }
+  } catch (err) {
+    // Network or timeout failure - fallback seamlessly
+  }
+
+  // 3. Fallback to built-in astronomical calculator calibrated to Diyanet standards
+  const fallbackTimes = calculatePrayerTimes(date, lat, lng)
+  return { times: fallbackTimes, source: 'offline_calc' }
+}
+
+
 

@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-neutral-950 text-neutral-100 font-sans antialiased selection:bg-cyan-500/30">
     <div class="max-w-md mx-auto px-4 py-6 space-y-6 pb-24">
       
-      <!-- Top Navigation / Title -->
+      <!-- Top Navigation -->
       <header class="flex items-center justify-between border-b border-neutral-800/80 pb-4">
         <div>
           <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-neutral-100 to-neutral-400 bg-clip-text text-transparent">
@@ -13,6 +13,7 @@
         <button 
           @click="showSettings = !showSettings"
           class="p-2.5 rounded-xl bg-neutral-900 border border-neutral-800 hover:border-neutral-700 transition-all duration-200 active:scale-95 text-neutral-300"
+          title="Ayarlar"
         >
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -21,7 +22,7 @@
         </button>
       </header>
 
-      <!-- Calculator / Onboarding Modal or Drawer -->
+      <!-- Calculator / Settings Modal -->
       <transition enter-active-class="transition duration-300 ease-out" enter-from-class="opacity-0 -translate-y-2" enter-to-class="opacity-100 translate-y-0" leave-active-class="transition duration-200 ease-in" leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 -translate-y-2">
         <section v-if="showSettings" class="p-5 rounded-2xl bg-neutral-900/90 border border-neutral-800 shadow-xl space-y-4">
           <h2 class="text-sm font-semibold tracking-wide uppercase text-neutral-400">Hesaplama Parametreleri</h2>
@@ -52,7 +53,7 @@
         </section>
       </transition>
 
-      <!-- Overview Status Bar -->
+      <!-- Overview Cards -->
       <section class="grid grid-cols-3 gap-2.5">
         <div class="p-3.5 rounded-2xl bg-neutral-900/60 border border-neutral-800/60 backdrop-blur-sm">
           <p class="text-[11px] text-neutral-400 uppercase tracking-wider">Kalan Gün</p>
@@ -68,25 +69,133 @@
         </div>
       </section>
 
+      <!-- Minimalist Trend Chart Section (Pure SVG) -->
+      <section class="p-5 rounded-3xl bg-neutral-900/40 border border-neutral-800/60 backdrop-blur-md space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-xs font-semibold text-neutral-300 uppercase tracking-wider">Kılınan Namaz Grafiği</h3>
+            <p class="text-[11px] text-neutral-500 mt-0.5">
+              {{ chartPeriod === 'weekly' ? 'Son 7 Günlük Performans' : 'Son 30 Günlük Performans' }}
+            </p>
+          </div>
+
+          <!-- View Toggle -->
+          <div class="flex p-1 bg-neutral-950/80 border border-neutral-800 rounded-xl">
+            <button 
+              @click="chartPeriod = 'weekly'"
+              :class="[
+                'px-2.5 py-1 text-[10px] font-medium rounded-lg transition-all duration-200',
+                chartPeriod === 'weekly' ? 'bg-cyan-500/20 text-cyan-300 shadow-sm' : 'text-neutral-400 hover:text-neutral-200'
+              ]"
+            >
+              Haftalık
+            </button>
+            <button 
+              @click="chartPeriod = 'monthly'"
+              :class="[
+                'px-2.5 py-1 text-[10px] font-medium rounded-lg transition-all duration-200',
+                chartPeriod === 'monthly' ? 'bg-cyan-500/20 text-cyan-300 shadow-sm' : 'text-neutral-400 hover:text-neutral-200'
+              ]"
+            >
+              Aylık
+            </button>
+          </div>
+        </div>
+
+        <!-- Metric Stat Strip -->
+        <div class="flex items-center justify-between px-3 py-2 rounded-xl bg-neutral-950/50 border border-neutral-800/40 text-xs">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            <span class="text-neutral-400">Toplam:</span>
+            <span class="font-semibold text-neutral-200">{{ periodStats.total }} Vakit</span>
+          </div>
+          <div class="text-neutral-400">
+            Başarı Oranı: <span class="font-semibold text-cyan-400">{{ periodStats.rate }}%</span>
+          </div>
+        </div>
+
+        <!-- SVG Visual Chart Container -->
+        <div class="pt-2">
+          <svg class="w-full h-36 overflow-visible" viewBox="0 0 320 120">
+            <defs>
+              <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.9" />
+                <stop offset="100%" stop-color="#0891b2" stop-opacity="0.3" />
+              </linearGradient>
+              <linearGradient id="barGradientFull" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#38bdf8" stop-opacity="1" />
+                <stop offset="100%" stop-color="#0284c7" stop-opacity="0.5" />
+              </linearGradient>
+            </defs>
+
+            <!-- Guide Grid Lines (0, 3, 6 prayers) -->
+            <line x1="0" y1="10" x2="320" y2="10" stroke="#262626" stroke-dasharray="3 3" stroke-width="1" />
+            <line x1="0" y1="55" x2="320" y2="55" stroke="#262626" stroke-dasharray="3 3" stroke-width="1" />
+            <line x1="0" y1="100" x2="320" y2="100" stroke="#333333" stroke-width="1" />
+
+            <!-- Y-Axis Labels -->
+            <text x="318" y="14" fill="#525252" font-size="8" text-anchor="end">6</text>
+            <text x="318" y="59" fill="#525252" font-size="8" text-anchor="end">3</text>
+            <text x="318" y="98" fill="#525252" font-size="8" text-anchor="end">0</text>
+
+            <!-- Dynamic Bars -->
+            <g v-for="(item, idx) in chartData" :key="idx">
+              <!-- Background Slot Bar -->
+              <rect 
+                :x="item.x" 
+                y="10" 
+                :width="item.width" 
+                height="90" 
+                rx="3" 
+                fill="#171717" 
+                class="transition-colors duration-200 hover:fill-neutral-800"
+              />
+              
+              <!-- Value Bar with Height Animation -->
+              <rect 
+                :x="item.x" 
+                :y="100 - item.barHeight" 
+                :width="item.width" 
+                :height="Math.max(item.barHeight, item.count > 0 ? 4 : 0)" 
+                rx="3" 
+                :fill="item.count === 6 ? 'url(#barGradientFull)' : 'url(#barGradient)'"
+                class="transition-all duration-300 ease-out cursor-pointer hover:brightness-125"
+                @click="openDayModal(item.dateStr)"
+              />
+
+              <!-- X-Axis Labels (Weekly: all days; Monthly: periodic) -->
+              <text 
+                v-if="item.showLabel"
+                :x="item.x + (item.width / 2)" 
+                y="114" 
+                fill="#737373" 
+                font-size="8.5" 
+                font-weight="500"
+                text-anchor="middle"
+              >
+                {{ item.label }}
+              </text>
+            </g>
+          </svg>
+        </div>
+      </section>
+
       <!-- Calendar View -->
       <section class="p-5 rounded-3xl bg-neutral-900/40 border border-neutral-800/60 backdrop-blur-md space-y-4">
-        <!-- Month Header -->
         <div class="flex items-center justify-between">
           <button @click="prevMonth" class="p-2 rounded-lg hover:bg-neutral-800 text-neutral-400 hover:text-white transition-colors">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
           </button>
-          <span class="text-sm font-semibold tracking-wide">{{ currentMonthName }} {{ currentYear }}</span>
+          <span class="text-sm font-semibold tracking-wide capitalize">{{ currentMonthName }} {{ currentYear }}</span>
           <button @click="nextMonth" class="p-2 rounded-lg hover:bg-neutral-800 text-neutral-400 hover:text-white transition-colors">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
           </button>
         </div>
 
-        <!-- Day Names -->
         <div class="grid grid-cols-7 text-center text-[10px] font-medium text-neutral-500 uppercase tracking-wider">
           <span>Pt</span><span>Sa</span><span>Ça</span><span>Pe</span><span>Cu</span><span>Ct</span><span>Pz</span>
         </div>
 
-        <!-- Grid Days -->
         <div class="grid grid-cols-7 gap-1.5">
           <div 
             v-for="(item, idx) in calendarDays" 
@@ -103,7 +212,6 @@
           </div>
         </div>
 
-        <!-- Calendar Legend -->
         <div class="flex items-center justify-center gap-4 pt-2 text-[11px] text-neutral-400">
           <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500/80 shadow-[0_0_8px_rgba(244,63,94,0.5)]"></span> Eksik</span>
           <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500/80 shadow-[0_0_8px_rgba(245,158,11,0.5)]"></span> Kısmi</span>
@@ -193,6 +301,7 @@ import { ref, computed, onMounted } from 'vue'
 
 const showSettings = ref(false)
 const selectedDate = ref(null)
+const chartPeriod = ref('weekly') // 'weekly' or 'monthly'
 
 const prayerTypes = [
   { id: 'fajr', name: 'Sabah' },
@@ -218,10 +327,7 @@ const prayerDebts = ref({
   witr: { total: 0, completed: 0 }
 })
 
-// Stores key-value: { "YYYY-MM-DD": ["fajr", "dhuhr", ...] }
 const dayLogs = ref({})
-
-// Calendar Navigation State
 const viewDate = ref(new Date())
 
 const currentYear = computed(() => viewDate.value.getFullYear())
@@ -232,7 +338,7 @@ const currentMonthName = computed(() => {
 const autoSetBulug = () => {
   if (profile.value.dob) {
     const d = new Date(profile.value.dob)
-    d.setFullYear(d.getFullYear() + 13) // Default to 13 years old
+    d.setFullYear(d.getFullYear() + 13)
     profile.value.bulugDate = d.toISOString().split('T')[0]
   }
 }
@@ -264,8 +370,7 @@ const totalCompletedCount = computed(() => {
 })
 
 const totalEstimatedDaysRemaining = computed(() => {
-  const maxMissing = Math.max(...prayerTypes.map(p => getRemainingForPrayer(p.id)), 0)
-  return maxMissing
+  return Math.max(...prayerTypes.map(p => getRemainingForPrayer(p.id)), 0)
 })
 
 const incrementKaza = (id) => {
@@ -280,11 +385,71 @@ const decrementKaza = (id) => {
   }
 }
 
+// SVG Visual Chart Computed Data
+const chartData = computed(() => {
+  const totalDays = chartPeriod.value === 'weekly' ? 7 : 30
+  const maxPrayersPerDay = 6
+  const chartWidth = 300 // Available width before padding
+  const paddingLeft = 5
+  
+  const slotWidth = chartWidth / totalDays
+  const barWidth = chartPeriod.value === 'weekly' ? Math.min(slotWidth * 0.55, 24) : Math.max(slotWidth * 0.65, 4.5)
+  const gapOffset = (slotWidth - barWidth) / 2
+
+  const list = []
+  const today = new Date()
+
+  for (let i = totalDays - 1; i >= 0; i--) {
+    const d = new Date()
+    d.setDate(today.getDate() - i)
+    const dateStr = d.toISOString().split('T')[0]
+    
+    const count = (dayLogs.value[dateStr] || []).length
+    const barHeight = (count / maxPrayersPerDay) * 90 // 90px max height
+    const x = paddingLeft + (totalDays - 1 - i) * slotWidth + gapOffset
+
+    let label = ''
+    let showLabel = false
+
+    if (chartPeriod.value === 'weekly') {
+      label = d.toLocaleDateString('tr-TR', { weekday: 'short' }).slice(0, 2)
+      showLabel = true
+    } else {
+      // Monthly: Show label every 5-6 days or 1st of month
+      const dayNum = d.getDate()
+      if (i % 6 === 0 || i === 0) {
+        label = `${dayNum}`
+        showLabel = true
+      }
+    }
+
+    list.push({
+      dateStr,
+      count,
+      barHeight,
+      x,
+      width: barWidth,
+      label,
+      showLabel
+    })
+  }
+
+  return list
+})
+
+const periodStats = computed(() => {
+  const data = chartData.value
+  const total = data.reduce((acc, item) => acc + item.count, 0)
+  const maxPossible = data.length * 6
+  const rate = maxPossible > 0 ? Math.round((total / maxPossible) * 100) : 0
+  return { total, rate }
+})
+
 // Calendar Logic
 const calendarDays = computed(() => {
   const y = viewDate.value.getFullYear()
   const m = viewDate.value.getMonth()
-  const firstDayIndex = (new Date(y, m, 1).getDay() + 6) % 7 // Monday = 0
+  const firstDayIndex = (new Date(y, m, 1).getDay() + 6) % 7
   const daysInMonth = new Date(y, m + 1, 0).getDate()
 
   const days = []
@@ -322,7 +487,6 @@ const getDayStatusClasses = (dateStr) => {
   if (count > 0 && count < 6) {
     return 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-[inset_0_0_12px_rgba(245,158,11,0.15)]'
   }
-  // Default / Missing Day
   return 'bg-neutral-900/60 text-neutral-400 border border-rose-500/30 hover:border-neutral-700'
 }
 

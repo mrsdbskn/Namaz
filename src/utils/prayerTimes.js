@@ -333,3 +333,52 @@ export function getKerahatInfo(times, now = new Date()) {
     allWindows: kerahatWindows
   }
 }
+
+// Real-time Solar Position (Azimuth & Altitude) Calculator
+export function calculateSolarPosition(date, lat, lng) {
+  const year = date.getFullYear()
+  const month = date.getMonth() + 1
+  const day = date.getDate()
+
+  // Julian Date calculation
+  let Y = year
+  let M = month
+  if (M <= 2) {
+    Y -= 1
+    M += 12
+  }
+  const A = Math.floor(Y / 100)
+  const B = 2 - A + Math.floor(A / 4)
+  const JD = Math.floor(365.25 * (Y + 4716)) + Math.floor(30.6001 * (M + 1)) + day + B - 1524.5
+
+  const D = JD - 2451545.0
+  const g = 357.529 + 0.98560028 * D
+  const q = 280.459 + 0.98564736 * D
+  const L = q + 1.915 * sinD(g) + 0.02 * sinD(2 * g)
+  const e = 23.439 - 0.00000036 * D
+  const RA = r2d(Math.atan2(cosD(e) * sinD(L), cosD(L))) / 15.0
+  const decl = arcsinD(sinD(e) * sinD(L))
+  const EqT = q / 15.0 - (RA < 0 ? RA + 24 : RA)
+
+  const tzOffset = -date.getTimezoneOffset() / 60
+  const noon = 12 + tzOffset - lng / 15.0 - EqT
+
+  const currentHours = date.getHours() + date.getMinutes() / 60 + date.getSeconds() / 3600
+  const H = (currentHours - noon) * 15.0 // Hour angle in degrees
+
+  // Solar Altitude (Elevation) alpha
+  const sinAlt = sinD(lat) * sinD(decl) + cosD(lat) * cosD(decl) * cosD(H)
+  const altitude = arcsinD(sinAlt)
+
+  // Solar Azimuth (degrees from North, clockwise 0 = N, 90 = E, 180 = S, 270 = W)
+  const y = -sinD(H)
+  const x = tanD(decl) * cosD(lat) - sinD(lat) * cosD(H)
+  let azimuth = (r2d(Math.atan2(y, x)) + 360) % 360
+
+  return {
+    azimuth: Math.round(azimuth * 10) / 10,
+    altitude: Math.round(altitude * 10) / 10,
+    isDay: altitude > -0.833
+  }
+}
+

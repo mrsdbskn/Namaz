@@ -207,8 +207,8 @@
 
       <!-- Qibla Compass Modal -->
       <transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0 scale-95" enter-to-class="opacity-100 scale-100" leave-active-class="transition duration-150 ease-in" leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95">
-        <div v-if="showQiblaModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div class="w-full max-w-sm bg-neutral-900 border border-neutral-800 rounded-3xl p-6 space-y-5 shadow-2xl text-center">
+        <div v-if="showQiblaModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div class="w-full max-w-sm bg-neutral-900 border border-neutral-800 rounded-3xl p-5 space-y-4 shadow-2xl text-center my-auto max-h-[92vh] overflow-y-auto">
             <div class="flex justify-between items-center pb-2 border-b border-neutral-800">
               <div class="text-left">
                 <h4 class="font-semibold text-sm text-neutral-100">{{ t('qiblaTitle') }}</h4>
@@ -219,10 +219,13 @@
 
             <!-- Qibla Angle & Alignment Badge -->
             <div class="space-y-1">
-              <div class="text-2xl font-bold text-neutral-100 tracking-tight">
-                {{ cityQiblaAngle }}° <span class="text-sm font-medium text-neutral-400">{{ getCompassDirectionLabel(cityQiblaAngle) }}</span>
+              <div class="text-2xl font-bold text-neutral-100 tracking-tight flex items-center justify-center gap-2">
+                <span>{{ cityQiblaAngle }}°</span>
+                <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-neutral-800 text-neutral-300 border border-neutral-700">
+                  {{ getCompassDirectionLabel(cityQiblaAngle) }}
+                </span>
               </div>
-              <p :class="['text-xs font-semibold', isQiblaAligned ? 'text-emerald-400 animate-pulse' : 'text-neutral-400']">
+              <p :class="['text-xs font-semibold transition-colors duration-200', isQiblaAligned ? 'text-emerald-400 animate-pulse' : 'text-neutral-400']">
                 {{ isQiblaAligned ? t('qiblaAligned') : t('qiblaNotAligned') }}
               </p>
             </div>
@@ -233,44 +236,160 @@
               <div 
                 :class="[
                   'absolute inset-0 rounded-full border-2 transition-all duration-300',
-                  isQiblaAligned ? 'border-emerald-500 shadow-[0_0_25px_rgba(16,185,129,0.4)]' : 'border-neutral-800'
+                  isQiblaAligned ? 'border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.5)]' : 'border-neutral-800'
                 ]"
               ></div>
 
               <!-- Rotating Compass Dial -->
               <div 
-                class="w-48 h-48 rounded-full bg-neutral-950 border border-neutral-800/80 relative flex items-center justify-center transition-transform duration-150 ease-out shadow-inner"
-                :style="{ transform: `rotate(${-deviceHeading}deg)` }"
+                class="w-48 h-48 rounded-full bg-neutral-950 border border-neutral-800/80 relative flex items-center justify-center transition-transform duration-150 ease-out shadow-inner select-none"
+                :style="{ transform: `rotate(${-effectiveHeading}deg)` }"
               >
                 <!-- Cardinal Points -->
-                <span class="absolute top-2 text-[11px] font-bold text-rose-500">{{ t('compassNorth') }}</span>
+                <div class="absolute top-1.5 flex flex-col items-center">
+                  <span class="text-[11px] font-bold text-rose-500 tracking-wider">{{ t('compassNorth') }}</span>
+                  <div class="w-1.5 h-1.5 border-l border-t border-rose-500 rotate-45 -mt-0.5"></div>
+                </div>
                 <span class="absolute bottom-2 text-[11px] font-semibold text-neutral-500">{{ t('compassSouth') }}</span>
                 <span class="absolute right-2 text-[11px] font-semibold text-neutral-500">{{ t('compassEast') }}</span>
                 <span class="absolute left-2 text-[11px] font-semibold text-neutral-500">{{ t('compassWest') }}</span>
 
                 <!-- Fixed Crosshair Lines -->
-                <div class="absolute w-full h-[1px] bg-neutral-900"></div>
-                <div class="absolute h-full w-[1px] bg-neutral-900"></div>
+                <div class="absolute w-full h-[1px] bg-neutral-900/90"></div>
+                <div class="absolute h-full w-[1px] bg-neutral-900/90"></div>
+
+                <!-- Sun Position Marker on Dial (☀️) -->
+                <div 
+                  class="absolute w-full h-full flex items-start justify-center pointer-events-none"
+                  :style="{ transform: `rotate(${solarPosition.azimuth}deg)` }"
+                  :title="`${t('qiblaSunAzimuthLabel')}: ${solarPosition.azimuth}°`"
+                >
+                  <div class="flex flex-col items-center -mt-2.5">
+                    <span :class="['text-sm transition-transform duration-300', solarPosition.isDay ? 'filter drop-shadow-[0_0_8px_rgba(251,191,36,0.8)] animate-pulse' : 'opacity-40 grayscale']">
+                      ☀️
+                    </span>
+                    <span class="w-1 h-3 bg-gradient-to-t from-transparent to-amber-400/80 rounded-full"></span>
+                  </div>
+                </div>
 
                 <!-- Qibla Marker Arrow & Kaaba Icon on Compass Ring -->
                 <div 
-                  class="absolute w-full h-full flex items-start justify-center"
+                  class="absolute w-full h-full flex items-start justify-center pointer-events-none"
                   :style="{ transform: `rotate(${cityQiblaAngle}deg)` }"
                 >
                   <div class="flex flex-col items-center -mt-3.5">
-                    <span class="text-lg animate-bounce">🕋</span>
-                    <span class="w-1.5 h-6 bg-gradient-to-t from-transparent to-amber-400 rounded-full"></span>
+                    <span class="text-lg animate-bounce drop-shadow-[0_0_10px_rgba(245,158,11,0.6)]">🕋</span>
+                    <span class="w-1.5 h-6 bg-gradient-to-t from-transparent to-emerald-400 rounded-full"></span>
                   </div>
                 </div>
               </div>
 
               <!-- Center Needle Pivot -->
               <div class="absolute w-4 h-4 rounded-full bg-neutral-800 border-2 border-neutral-600 shadow-md"></div>
-              <div class="absolute -top-2 w-1 h-3 bg-cyan-400 rounded-full"></div>
+              <div class="absolute -top-2 w-1.5 h-3.5 bg-cyan-400 rounded-full shadow-[0_0_8px_rgba(34,211,238,0.8)]"></div>
+            </div>
+
+            <!-- Heading & Calibration Status Bar -->
+            <div class="flex items-center justify-between px-3 py-1.5 bg-neutral-950/70 border border-neutral-800/80 rounded-xl text-xs">
+              <div class="flex items-center gap-1.5">
+                <span class="text-neutral-500">{{ t('qiblaCurrentHeading') }}:</span>
+                <span class="font-mono font-semibold text-neutral-200">{{ Math.round(effectiveHeading) }}°</span>
+                <span class="text-[11px] text-neutral-400">({{ getCompassDirectionLabel(effectiveHeading) }})</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <span v-if="compassOffset !== 0" class="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-mono border border-amber-500/30">
+                  {{ compassOffset > 0 ? '+' : '' }}{{ compassOffset }}°
+                </span>
+                <span v-else class="text-[10px] text-neutral-500 font-mono">0°</span>
+              </div>
+            </div>
+
+            <!-- Quick Calibration Action -->
+            <button 
+              @click="calibrateFacingAsNorth"
+              class="w-full py-2 bg-neutral-800 hover:bg-neutral-700 active:bg-neutral-600 border border-neutral-700/70 text-neutral-200 text-xs font-medium rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-sm"
+            >
+              {{ t('qiblaSetNorthBtn') }}
+            </button>
+
+            <!-- Collapsible Calibration & Tools Section -->
+            <div class="border border-neutral-800 rounded-2xl bg-neutral-950/50 overflow-hidden text-left">
+              <button 
+                @click="showCalibrationPanel = !showCalibrationPanel"
+                class="w-full px-3.5 py-2.5 flex items-center justify-between text-xs font-medium text-neutral-300 hover:text-white transition-colors"
+              >
+                <span class="flex items-center gap-1.5">
+                  <span>⚙️</span>
+                  <span>{{ t('qiblaCalibrateToggle') }}</span>
+                </span>
+                <span class="text-neutral-500 transform transition-transform duration-200" :class="{ 'rotate-180': showCalibrationPanel }">▼</span>
+              </button>
+
+              <div v-show="showCalibrationPanel" class="px-3.5 pb-3.5 pt-1 border-t border-neutral-800/80 space-y-3">
+                <!-- Manual Offset Steppers -->
+                <div>
+                  <div class="flex justify-between items-center text-[11px] text-neutral-400 mb-1.5">
+                    <span>{{ t('qiblaOffsetLabel') }}</span>
+                    <span class="font-mono text-cyan-400">{{ compassOffset > 0 ? '+' : '' }}{{ compassOffset }}°</span>
+                  </div>
+                  
+                  <div class="grid grid-cols-5 gap-1">
+                    <button @click="adjustCompassOffset(-5)" class="py-1 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-xs font-mono text-neutral-300 border border-neutral-700/60">-5°</button>
+                    <button @click="adjustCompassOffset(-1)" class="py-1 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-xs font-mono text-neutral-300 border border-neutral-700/60">-1°</button>
+                    <button @click="resetCompassOffset" class="py-1 bg-neutral-800/80 hover:bg-rose-900/40 text-neutral-400 hover:text-rose-300 rounded-lg text-[10px] border border-neutral-700/60 flex items-center justify-center" :title="t('qiblaResetOffsetBtn')">0°</button>
+                    <button @click="adjustCompassOffset(1)" class="py-1 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-xs font-mono text-neutral-300 border border-neutral-700/60">+1°</button>
+                    <button @click="adjustCompassOffset(5)" class="py-1 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-xs font-mono text-neutral-300 border border-neutral-700/60">+5°</button>
+                  </div>
+
+                  <!-- Slider -->
+                  <div class="mt-2 flex items-center gap-2">
+                    <span class="text-[10px] text-neutral-500 font-mono">-180°</span>
+                    <input 
+                      type="range" 
+                      min="-180" 
+                      max="180" 
+                      step="1" 
+                      :value="compassOffset" 
+                      @input="setCompassOffset($event.target.value)"
+                      class="w-full accent-cyan-400 h-1.5 bg-neutral-800 rounded-lg cursor-pointer"
+                    />
+                    <span class="text-[10px] text-neutral-500 font-mono">+180°</span>
+                  </div>
+                </div>
+
+                <!-- Sun Position / Azimuth Info Card -->
+                <div class="p-2.5 bg-neutral-900/80 border border-amber-500/20 rounded-xl space-y-1">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="font-medium text-amber-300 flex items-center gap-1">
+                      <span>☀️</span> {{ t('qiblaSunAzimuthLabel') }}:
+                    </span>
+                    <span class="font-mono text-amber-200 font-semibold">{{ solarPosition.azimuth }}°</span>
+                  </div>
+                  <div class="flex items-center justify-between text-[11px] text-neutral-400">
+                    <span>{{ solarPosition.isDay ? `☀️ ${t('qiblaSunDaytime')} (${solarPosition.altitude}°)` : `🌙 ${t('qiblaSunNighttime')}` }}</span>
+                    <span>{{ getCompassDirectionLabel(solarPosition.azimuth) }}</span>
+                  </div>
+                  <p class="text-[10px] text-neutral-400 leading-tight pt-1 border-t border-neutral-800/80">
+                    {{ t('qiblaSunGuideText') }}
+                  </p>
+                </div>
+
+                <!-- Figure-8 Guide Trigger Button -->
+                <button 
+                  @click="showFigure8Modal = true"
+                  class="w-full py-2 px-2.5 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700/70 rounded-xl text-xs text-neutral-300 flex items-center justify-between transition-colors"
+                >
+                  <span class="flex items-center gap-1.5">
+                    <span>🧲</span>
+                    <span>{{ t('qiblaFigure8Btn') }}</span>
+                  </span>
+                  <span class="text-neutral-500 text-[11px]">→</span>
+                </button>
+              </div>
             </div>
 
             <!-- Compass Sensor Status / Fallback Notice -->
-            <div class="pt-2 text-xs text-neutral-400">
+            <div class="pt-1 text-xs text-neutral-400">
               <button 
                 v-if="!compassActive" 
                 @click="requestCompassPermission"
@@ -282,6 +401,82 @@
                 {{ t('qiblaActiveInfo') }}
               </p>
             </div>
+          </div>
+        </div>
+      </transition>
+
+      <!-- Sensor Calibration (Figure-8) Help Modal -->
+      <transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0 scale-95" enter-to-class="opacity-100 scale-100" leave-active-class="transition duration-150 ease-in" leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95">
+        <div v-if="showFigure8Modal" class="fixed inset-0 z-[60] bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div class="w-full max-w-sm bg-neutral-900 border border-neutral-800 rounded-3xl p-6 space-y-4 shadow-2xl text-center">
+            <div class="flex justify-between items-center pb-2 border-b border-neutral-800">
+              <div class="text-left">
+                <h4 class="font-semibold text-sm text-neutral-100 flex items-center gap-1.5">
+                  <span>🧲</span> {{ t('qiblaFigure8ModalTitle') }}
+                </h4>
+                <p class="text-xs text-neutral-400">{{ t('qiblaFigure8ModalSubtitle') }}</p>
+              </div>
+              <button @click="showFigure8Modal = false" class="text-neutral-400 hover:text-white p-1">✕</button>
+            </div>
+
+            <!-- Animated Figure-8 SVG Graphic -->
+            <div class="relative w-48 h-28 mx-auto flex items-center justify-center bg-neutral-950/80 border border-neutral-800/80 rounded-2xl p-2 overflow-hidden shadow-inner">
+              <svg viewBox="0 0 200 100" class="w-full h-full">
+                <!-- Infinity Track Background -->
+                <path 
+                  d="M 50 50 C 50 20, 10 20, 10 50 C 10 80, 50 80, 100 50 C 150 20, 190 20, 190 50 C 190 80, 150 80, 100 50 Z" 
+                  fill="none" 
+                  stroke="rgba(255, 255, 255, 0.15)" 
+                  stroke-width="6" 
+                  stroke-linecap="round"
+                />
+                <!-- Animated Glowing Infinity Stroke -->
+                <path 
+                  d="M 50 50 C 50 20, 10 20, 10 50 C 10 80, 50 80, 100 50 C 150 20, 190 20, 190 50 C 190 80, 150 80, 100 50 Z" 
+                  fill="none" 
+                  stroke="url(#figure8Glow)" 
+                  stroke-width="3" 
+                  stroke-dasharray="25 175" 
+                  stroke-linecap="round"
+                >
+                  <animate attributeName="stroke-dashoffset" from="0" to="-200" dur="3s" repeatCount="indefinite" />
+                </path>
+                <defs>
+                  <linearGradient id="figure8Glow" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#06b6d4" />
+                    <stop offset="50%" stop-color="#10b981" />
+                    <stop offset="100%" stop-color="#f59e0b" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <!-- Center Phone / Gesture Badge -->
+              <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <span class="text-2xl animate-bounce">📱</span>
+              </div>
+            </div>
+
+            <!-- Steps List -->
+            <div class="space-y-2.5 text-left text-xs">
+              <div class="flex items-start gap-2.5 p-2 bg-neutral-950/60 rounded-xl border border-neutral-800/60">
+                <span class="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-400 font-bold flex items-center justify-center text-[10px] shrink-0">1</span>
+                <p class="text-neutral-300 leading-tight">{{ t('qiblaFigure8Step1') }}</p>
+              </div>
+              <div class="flex items-start gap-2.5 p-2 bg-neutral-950/60 rounded-xl border border-neutral-800/60">
+                <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold flex items-center justify-center text-[10px] shrink-0">2</span>
+                <p class="text-neutral-300 leading-tight">{{ t('qiblaFigure8Step2') }}</p>
+              </div>
+              <div class="flex items-start gap-2.5 p-2 bg-neutral-950/60 rounded-xl border border-neutral-800/60">
+                <span class="w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 font-bold flex items-center justify-center text-[10px] shrink-0">3</span>
+                <p class="text-neutral-300 leading-tight">{{ t('qiblaFigure8Step3') }}</p>
+              </div>
+            </div>
+
+            <button 
+              @click="showFigure8Modal = false"
+              :class="['w-full py-2.5 text-white font-medium rounded-xl text-xs transition-all shadow-md', themeClasses.gradientBtn]"
+            >
+              {{ t('qiblaFigure8DoneBtn') }}
+            </button>
           </div>
         </div>
       </transition>
@@ -986,6 +1181,7 @@ import {
   calculatePrayerTimes, 
   getNextPrayerInfo, 
   calculateQiblaAngle, 
+  calculateSolarPosition,
   getKerahatInfo, 
   TURKISH_CITIES 
 } from './utils/prayerTimes.js'
@@ -1156,26 +1352,65 @@ const cityQiblaAngle = computed(() => {
   return calculateQiblaAngle(city.lat, city.lng)
 })
 
-const deviceHeading = ref(0)
+const rawDeviceHeading = ref(0)
+const compassOffset = ref(Number(localStorage.getItem('namaz_compass_offset') || 0))
 const compassActive = ref(false)
+const showCalibrationPanel = ref(false)
+const showFigure8Modal = ref(false)
 let orientationHandler = null
+let absoluteOrientationSupported = false
+
+const effectiveHeading = computed(() => {
+  return (rawDeviceHeading.value + compassOffset.value + 360) % 360
+})
+
+const solarPosition = computed(() => {
+  const city = activeCityObj.value
+  return calculateSolarPosition(nowTimer.value, city.lat, city.lng)
+})
 
 const getCompassDirectionLabel = (angle) => {
-  if (angle >= 337.5 || angle < 22.5) return t('dirNorth')
-  if (angle >= 22.5 && angle < 67.5) return t('dirNorthEast')
-  if (angle >= 67.5 && angle < 112.5) return t('dirEast')
-  if (angle >= 112.5 && angle < 157.5) return t('dirSouthEast')
-  if (angle >= 157.5 && angle < 202.5) return t('dirSouth')
-  if (angle >= 202.5 && angle < 247.5) return t('dirSouthWest')
-  if (angle >= 247.5 && angle < 292.5) return t('dirWest')
+  const norm = ((angle % 360) + 360) % 360
+  if (norm >= 337.5 || norm < 22.5) return t('dirNorth')
+  if (norm >= 22.5 && norm < 67.5) return t('dirNorthEast')
+  if (norm >= 67.5 && norm < 112.5) return t('dirEast')
+  if (norm >= 112.5 && norm < 157.5) return t('dirSouthEast')
+  if (norm >= 157.5 && norm < 202.5) return t('dirSouth')
+  if (norm >= 202.5 && norm < 247.5) return t('dirSouthWest')
+  if (norm >= 247.5 && norm < 292.5) return t('dirWest')
   return t('dirNorthWest')
 }
 
 const isQiblaAligned = computed(() => {
-  if (!compassActive.value) return false
-  const diff = Math.abs((deviceHeading.value - cityQiblaAngle.value + 360) % 360)
+  const diff = Math.abs((effectiveHeading.value - cityQiblaAngle.value + 360) % 360)
   return diff <= 5 || diff >= 355
 })
+
+const setCompassOffset = (val) => {
+  let normalized = Math.round(Number(val))
+  while (normalized > 180) normalized -= 360
+  while (normalized < -180) normalized += 360
+  compassOffset.value = normalized
+  localStorage.setItem('namaz_compass_offset', String(normalized))
+}
+
+const adjustCompassOffset = (delta) => {
+  setCompassOffset(compassOffset.value + delta)
+}
+
+const calibrateFacingAsNorth = () => {
+  // If rawDeviceHeading is H, we want effectiveHeading = 0 => (H + offset) % 360 = 0 => offset = -H
+  let offset = -rawDeviceHeading.value
+  while (offset < -180) offset += 360
+  while (offset > 180) offset -= 360
+  setCompassOffset(offset)
+  showToast(t('toastCalibratedNorth'))
+}
+
+const resetCompassOffset = () => {
+  setCompassOffset(0)
+  showToast(t('toastOffsetReset'))
+}
 
 const handleOrientation = (e) => {
   let heading = 0
@@ -1184,8 +1419,8 @@ const handleOrientation = (e) => {
   } else if (e.alpha !== null) {
     heading = (360 - e.alpha) % 360
   }
-  deviceHeading.value = Math.round(heading)
-  if (isQiblaAligned.value && navigator.vibrate) {
+  rawDeviceHeading.value = Math.round(heading)
+  if (compassActive.value && isQiblaAligned.value && navigator.vibrate) {
     navigator.vibrate(30)
   }
 }
@@ -1209,8 +1444,13 @@ const requestCompassPermission = async () => {
 }
 
 const startCompassListener = () => {
-  if (window.DeviceOrientationEvent) {
-    orientationHandler = handleOrientation
+  orientationHandler = handleOrientation
+  if ('ondeviceorientationabsolute' in window) {
+    window.addEventListener('deviceorientationabsolute', orientationHandler, true)
+    absoluteOrientationSupported = true
+    compassActive.value = true
+    showToast(t('toastCompassActive'))
+  } else if (window.DeviceOrientationEvent) {
     window.addEventListener('deviceorientation', orientationHandler, true)
     compassActive.value = true
     showToast(t('toastCompassActive'))
@@ -1227,6 +1467,9 @@ const openQiblaModal = () => {
 const closeQiblaModal = () => {
   showQiblaModal.value = false
   if (orientationHandler) {
+    if (absoluteOrientationSupported) {
+      window.removeEventListener('deviceorientationabsolute', orientationHandler, true)
+    }
     window.removeEventListener('deviceorientation', orientationHandler, true)
     compassActive.value = false
   }
